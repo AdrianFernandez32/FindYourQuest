@@ -86,3 +86,7 @@ As an adventure seeker, I want to easily discover unique tourist attractions, fi
 9. As a traveler, I want to access real-time updates on travel deals and discounts for flights, accommodations, and attractions, allowing me to save money on my trips.
 
 10. As a traveler, I want to share my travel experiences, photos, and recommendations with the "FindYourQuest" community, connecting with other travel enthusiasts and inspiring future adventurers.
+
+## Wireframes
+
+##### https://drive.google.com/file/d/1LuWTK71d2wXh9SnBK8j1nTK5e58cfdY5/view?usp=sharing
