@@ -90,3 +90,23 @@ As an adventure seeker, I want to easily discover unique tourist attractions, fi
 ## Wireframes
 
 ##### https://drive.google.com/file/d/1LuWTK71d2wXh9SnBK8j1nTK5e58cfdY5/view?usp=sharing
+
+#### Features
+
+### Required
+
+- User can login
+- User can create an account
+- User can create / edit / delete comments
+- User can like comments
+- User can see/edit their profile
+- Create itineraries for their future travels
+- Save or delete these itineraries (Up to 3 per user)
+- User can see places around them in real-time
+- Adventure mode
+- User passwords are encrypted in the database for security
+
+### Optional
+
+- User can upload multi-media (photos, videos) comments
+- See deals for hotels, restaurants of recreational activities
