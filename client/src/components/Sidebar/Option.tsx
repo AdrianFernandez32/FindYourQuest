@@ -1,14 +1,17 @@
+import { ReactElement } from "react";
+import { IconBaseProps, IconType } from "react-icons";
+
 type Props = {
   name: string;
-  imageURL: string;
+  icon: ReactElement;
 };
 
-const Option = ({ name, imageURL }: Props) => {
-  console.log(imageURL);
+const Option = ({ name, icon }: Props) => {
+  console.log(name);
   return (
-    <div className="w-[90%] h-12 bg-white rounded-lg flex justify-start items-center duration-150 hover:bg-slate-100 hover:scale-105 ">
-      <img src={imageURL} alt={name} className="h-2/3 ml-2 mr-3" />
-      <h1 className="font-medium">{name}</h1>
+    <div className="w-full flex justify-start items-center p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00]">
+      {icon}
+      <h1 className="font-semibold text-xl">{name}</h1>
     </div>
   );
 };

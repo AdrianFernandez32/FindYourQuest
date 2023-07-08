@@ -11,6 +11,11 @@ const Home = () => {
 
   return (
     <div className="w-full flex justify-center">
+      <div
+        className={`fixed w-full h-full bg-black bg-opacity-50 sm:bg-opacity-0 duration-100 ${
+          open ? "block sm:hidden" : "hidden"
+        }`}
+      />
       <Navbar toggleSidebar={toggleSidebar} />
       <Sidebar open={open} toggleSidebar={toggleSidebar} />
     </div>
