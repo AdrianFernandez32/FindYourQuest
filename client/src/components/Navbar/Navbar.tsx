@@ -8,7 +8,7 @@ type Props = {
 
 const Navbar = ({ toggleSidebar }: Props) => {
   return (
-    <div className="w-full h-14 border-b border-gray-300 flex justify-between items-center px-3">
+    <div className="w-full h-14 border-b static top-0 border-gray-300 flex justify-between items-center px-3">
       <img src={FYQH_logo} alt="FYQLogo" className="h-2/3 md:h-3/4" />
       <GiHamburgerMenu
         className="cursor-pointer"

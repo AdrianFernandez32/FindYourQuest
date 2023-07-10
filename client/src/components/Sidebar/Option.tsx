@@ -7,7 +7,6 @@ type Props = {
 };
 
 const Option = ({ name, icon }: Props) => {
-  console.log(name);
   return (
     <div className="w-full flex justify-start items-center p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00]">
       {icon}
