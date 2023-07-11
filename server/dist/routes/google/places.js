@@ -30,6 +30,21 @@ const getPhotoReference = async (placeId) => {
         console.error(error);
     }
 };
+const getNearbyCities = async (placeId) => {
+    try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=place_id:${placeId}&radius=50000&type=(cities)&key=${APIKey}`);
+        if (response.data.results) {
+            return response.data.results.map((city) => city.name);
+        }
+        else {
+            return [];
+        }
+    }
+    catch (error) {
+        console.error(error);
+        return [];
+    }
+};
 googleRoutes.get("/cityInfo", async (req, res, next) => {
     const { city, state } = req.query;
     try {
@@ -37,6 +52,22 @@ googleRoutes.get("/cityInfo", async (req, res, next) => {
         if (placeId) {
             const photoReference = await getPhotoReference(placeId);
             res.json({ photoReference });
+        }
+        else {
+            res.status(404).json({ error: "No place found" });
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+});
+googleRoutes.get("/nearbyCities", async (req, res, next) => {
+    const { city, state } = req.query;
+    try {
+        const placeId = await getPlaceId(city, state);
+        if (placeId) {
+            const placesAround = await getNearbyCities(placeId);
+            res.json(placesAround);
         }
         else {
             res.status(404).json({ error: "No place found" });

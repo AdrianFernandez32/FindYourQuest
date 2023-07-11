@@ -1,6 +1,7 @@
 import axios from "axios";
 import { stat } from "fs";
 import React, { useEffect, useState } from "react";
+import { Spinner } from "@chakra-ui/react";
 
 const CurrCity = () => {
   const [imageReference, setImageReference] = useState("");
@@ -78,6 +79,23 @@ const CurrCity = () => {
   useEffect(() => {
     fetchImage();
   }, []);
+
+  if (imageReference === "") {
+    return (
+      <div className="w-full lg:w-2/3 h-1/3 lg:h-1/2 flex flex-col justify-center items-center border border-gray-300">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+        <h1 className="font-bold sm:text-3xl lg:text-4xl mt-4">
+          Loading localization...
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full lg:w-2/3 h-1/3 lg:h-1/2 overflow-hidden relative">
