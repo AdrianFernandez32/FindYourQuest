@@ -1,8 +1,11 @@
 import axios from "axios";
+import { stat } from "fs";
 import React, { useEffect, useState } from "react";
 
 const CurrCity = () => {
-  const [imageURL, setImageURL] = useState("");
+  const [imageReference, setImageReference] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const APIKey = "AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc";
 
   const fetchImage = async () => {
@@ -17,8 +20,9 @@ const CurrCity = () => {
       if (response.data.status === "OK") {
         const data = response.data;
         const city = getCity(data);
+        setCity(city);
         const state = getState(data);
-
+        setState(state);
         getCityInfo(city, state);
       }
     } catch (error) {
@@ -57,12 +61,15 @@ const CurrCity = () => {
   const getCityInfo = async (city: string, state: string) => {
     try {
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${
-          city + state
-        }&types=(cities)&key=${APIKey}`
+        "http://localhost:3001/google/cityInfo",
+        {
+          params: {
+            city: city,
+            state: state,
+          },
+        }
       );
-
-      console.log(response.data);
+      setImageReference(response.data.photoReference);
     } catch (error) {
       console.error(error);
     }
@@ -72,7 +79,21 @@ const CurrCity = () => {
     fetchImage();
   }, []);
 
-  return <div className="w-full border border-black">hola</div>;
+  return (
+    <div className="w-full lg:w-2/3 h-1/3 lg:h-1/2 overflow-hidden relative">
+      <img
+        className="w-full h-full object-cover"
+        src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${imageReference}&key=${APIKey}`}
+        alt="Place Photo"
+      />
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-end items-start p-4">
+        <p className="text-white text-xl font-bold">You're in</p>
+        <p className="text-white text-2xl font-extrabold">
+          {city + ", " + state}
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default CurrCity;
