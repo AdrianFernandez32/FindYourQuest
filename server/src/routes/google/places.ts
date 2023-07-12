@@ -85,29 +85,31 @@ googleRoutes.get("/nearbyCities", async (req, res, next) => {
   try {
     const cities = await getNearbyCities(latitude, longitude);
 
-    const updatedCities = [];
-    for (const city of cities) {
-      const { city: cityName, state, distance } = city;
+    const updatedCities = await Promise.all(
+      cities.map(async (city) => {
+        const { city: cityName, state, distance } = city;
 
-      try {
-        const placeId = await getPlaceId(cityName, state);
-        if (placeId) {
-          const photoReference = await getPhotoReference(placeId);
-          const updatedCity = {
-            city: cityName,
-            state,
-            distance,
-            googlePlaceId: placeId,
-            googlePlacesPhotoReference: photoReference,
-          };
-          updatedCities.push(updatedCity);
+        try {
+          const placeId = await getPlaceId(cityName, state);
+          if (placeId) {
+            const photoReference = await getPhotoReference(placeId);
+            return {
+              city: cityName,
+              state,
+              distance,
+              googlePlaceId: placeId,
+              googlePlacesPhotoReference: photoReference,
+            };
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    }
+      })
+    );
 
-    res.json({ nearbyCities: updatedCities });
+    const filteredCities = updatedCities.filter((city) => city !== undefined);
+
+    res.json({ nearbyCities: filteredCities });
   } catch (error) {
     next(error);
   }
