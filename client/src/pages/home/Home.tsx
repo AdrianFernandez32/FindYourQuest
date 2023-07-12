@@ -54,11 +54,11 @@ const Home = () => {
       <Navbar toggleSidebar={toggleSidebar} />
       <CurrCity />
       {nearbyCities.length > 0 ? (
-        <div className="w-full lg:w-2/3 h-[75vh]">
+        <div className="w-full lg:w-2/3 h-1/4">
           <h1 className="text-2xl lg:text-4xl font-bold my-2 mx-4 border-b border-gray-300">
             Cities near your
           </h1>
-          <div className="w-full overflow-y-auto p-3">
+          <div className="w-full p-3">
             <div className="grid w-full grid-flow-row auto-rows-max gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-3 md:p-0 items-center">
               {nearbyCities.map((city) => {
                 return <NearbyCityCard key={city.placeId} city={city} />;
@@ -67,7 +67,7 @@ const Home = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full lg:w-2/3 h-2/3 flex flex-col justify-center items-center gap-4">
+        <div className="w-full lg:w-2/3 h-1/4 flex flex-col justify-center items-center gap-4">
           <Spinner />
           <h1 className="sm:text-3xl lg:text-4xl font-bold">
             Loading nearby towns

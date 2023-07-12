@@ -84,7 +84,7 @@ const CurrCity = () => {
 
   if (imageReference === "") {
     return (
-      <div className="w-full lg:w-2/3 h-1/4 lg:h-1/2 flex flex-col justify-center items-center border border-gray-300">
+      <div className="w-full lg:w-2/3 h-1/4 lg:h-[42%] flex flex-col justify-center items-center border border-gray-300">
         <Spinner
           thickness="4px"
           speed="0.65s"
@@ -100,7 +100,7 @@ const CurrCity = () => {
   }
 
   return (
-    <div className="w-full lg:w-2/3 h-[25vh] lg:h-1/2 overflow-hidden relative">
+    <div className="w-full lg:w-2/3 h-1/4 lg:h-[42%] overflow-hidden relative">
       <img
         className="w-full h-full object-cover"
         src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${imageReference}&key=${APIKey}`}

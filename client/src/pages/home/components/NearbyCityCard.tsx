@@ -26,7 +26,7 @@ const NearbyCityCard = (props: { city: ICity }) => {
           {props.city.city}, {props.city.state}
         </h1>
         <h4 className="text-md font-medium text-gray-600">
-          {props.city.distance}
+          {props.city.distance.substring(0, 4)} miles away
         </h4>
       </div>
     </div>
