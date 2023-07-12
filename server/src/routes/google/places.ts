@@ -52,6 +52,7 @@ const getNearbyCities = async (latitude: any, longitude: any) => {
         googlePlaceId: "",
         googlePlacesPhotoReference: "",
       }));
+
       return nearbyCities;
     } else {
       return [];

@@ -3,6 +3,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import CurrCity from "./components/CurrCity";
 import axios from "axios";
+import { Spinner } from "@chakra-ui/react";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -51,15 +52,20 @@ const Home = () => {
       <Navbar toggleSidebar={toggleSidebar} />
       <CurrCity />
       <div className="w-full lg:w-2/3 grid grid-flow-row auto-rows-max gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {nearbyCities ? (
+        {nearbyCities.length > 0 ? (
           <div>
             {nearbyCities.map((city) => {
               console.log(city);
-              return <div></div>;
+              return <div>hola hola</div>;
             })}
           </div>
         ) : (
-          <div></div>
+          <div className="w-full lg:w-2/3 h-60 border border-gray-300 flex flex-col justify-center items-center gap-4">
+            <Spinner />
+            <h1 className="text-2xl lg:text-3xl font-bold">
+              Loading nearby towns
+            </h1>
+          </div>
         )}
       </div>
 
