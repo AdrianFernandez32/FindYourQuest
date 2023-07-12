@@ -1,15 +1,36 @@
 import React from "react";
+import { ICity } from "../../../assets/interfaces/City";
+import defaultcity from "../../../assets/images/defaultcity.png";
 
-type Props = {
-  city: string;
-  state: string;
-  distance: string;
-  googlePlaceId: string;
-  googlePLacesPhotoReference: string;
-};
+const NearbyCityCard = (props: { city: ICity }) => {
+  const APIKey = "AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc";
 
-const NearbyCityCard = () => {
-  return <div></div>;
+  return (
+    <div className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden">
+      {props.city.googlePlacesPhotoReference ? (
+        <img
+          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${props.city.googlePlacesPhotoReference}&key=${APIKey}`}
+          alt={props.city.city}
+          className="w-full h-2/3 object-cover"
+        />
+      ) : (
+        <img
+          src={defaultcity}
+          alt={props.city.city}
+          className="w-full h-2/3 object-cover"
+        />
+      )}
+
+      <div className="w-full h-1/3 flex flex-col p-2">
+        <h1 className="text-lg font-bold">
+          {props.city.city}, {props.city.state}
+        </h1>
+        <h4 className="text-md font-medium text-gray-600">
+          {props.city.distance}
+        </h4>
+      </div>
+    </div>
+  );
 };
 
 export default NearbyCityCard;
