@@ -7,6 +7,7 @@ const CurrCity = () => {
   const [imageReference, setImageReference] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
+
   const APIKey = "AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc";
 
   const fetchImage = async () => {
@@ -16,6 +17,7 @@ const CurrCity = () => {
       });
 
       const { latitude, longitude } = position.coords;
+
       const geocodeApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${APIKey}`;
       const response = await axios.get(geocodeApiUrl);
       if (response.data.status === "OK") {

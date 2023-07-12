@@ -38,13 +38,21 @@ const getPhotoReference = async (placeId: string) => {
   }
 };
 
-const getNearbyCities = async (placeId: string) => {
+const getNearbyCities = async (latitude: any, longitude: any) => {
   try {
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=place_id:${placeId}&radius=50000&type=(cities)&key=${APIKey}`
+      `http://api.geonames.org/findNearbyJSON?lat=${latitude}&lng=${longitude}&cities=cities1000&radius=50&maxRows=10&username=adrianfersa`
     );
-    if (response.data.results) {
-      return response.data.results.map((city) => city.name);
+
+    if (response.data.geonames && response.data.geonames.length > 0) {
+      const nearbyCities = response.data.geonames.map((city) => ({
+        city: city.toponymName,
+        state: city.adminName1,
+        distance: city.distance,
+        googlePlaceId: "",
+        googlePlacesPhotoReference: "",
+      }));
+      return nearbyCities;
     } else {
       return [];
     }
@@ -71,16 +79,34 @@ googleRoutes.get("/cityInfo", async (req, res, next) => {
 });
 
 googleRoutes.get("/nearbyCities", async (req, res, next) => {
-  const { city, state } = req.query;
+  const { latitude, longitude } = req.query;
 
   try {
-    const placeId = await getPlaceId(city, state);
-    if (placeId) {
-      const placesAround = await getNearbyCities(placeId);
-      res.json(placesAround);
-    } else {
-      res.status(404).json({ error: "No place found" });
+    const cities = await getNearbyCities(latitude, longitude);
+
+    const updatedCities = [];
+    for (const city of cities) {
+      const { city: cityName, state, distance } = city;
+
+      try {
+        const placeId = await getPlaceId(cityName, state);
+        if (placeId) {
+          const photoReference = await getPhotoReference(placeId);
+          const updatedCity = {
+            city: cityName,
+            state,
+            distance,
+            googlePlaceId: placeId,
+            googlePlacesPhotoReference: photoReference,
+          };
+          updatedCities.push(updatedCity);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
+
+    res.json({ nearbyCities: updatedCities });
   } catch (error) {
     next(error);
   }
