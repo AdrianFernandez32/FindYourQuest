@@ -6,25 +6,31 @@ import axios from "axios";
 import { Spinner } from "@chakra-ui/react";
 import { ICity } from "../../assets/interfaces/City";
 import NearbyCityCard from "./components/NearbyCityCard";
+import { resolve } from "path";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [nearbyCities, setNearbyCities] = useState<ICity[]>([]);
+  const [coords, setCoords] = useState(null);
   const username = "adrianfersa";
 
   const toggleSidebar = () => {
     setOpen(!open);
   };
 
-  const fetchNearbyCities = async () => {
+  const getCoordenates = async () => {
+    const position: any = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+    setCoords(position.coords);
+  };
+
+  const fetchNearbyCities = async (coords: any) => {
+    console.log(coords);
     try {
-      const position: any = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-      const { latitude, longitude } = position.coords;
       try {
         const response = await axios.get(
-          `http://localhost:3001/google/nearbyCities?latitude=${latitude}&longitude=${longitude}`
+          `http://localhost:3001/google/nearbyCities?latitude=${coords.latitude}&longitude=${coords.longitude}`
         );
         if (
           response.data.nearbyCities &&
@@ -41,8 +47,14 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchNearbyCities();
+    getCoordenates();
   }, []);
+
+  useEffect(() => {
+    if (coords) {
+      fetchNearbyCities(coords);
+    }
+  }, [coords]);
 
   return (
     <div className="w-full flex flex-col h-screen items-center">
