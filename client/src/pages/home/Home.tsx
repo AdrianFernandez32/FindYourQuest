@@ -11,22 +11,21 @@ import { resolve } from "path";
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [nearbyCities, setNearbyCities] = useState<ICity[]>([]);
-  const [coords, setCoords] = useState(null);
   const username = "adrianfersa";
 
   const toggleSidebar = () => {
     setOpen(!open);
   };
 
-  const getCoordenates = async () => {
+  const getCoordinates = async () => {
     const position: any = await new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     });
-    setCoords(position.coords);
+    return position.coords;
   };
 
-  const fetchNearbyCities = async (coords: any) => {
-    console.log(coords);
+  const fetchNearbyCities = async () => {
+    const coords = await getCoordinates();
     try {
       try {
         const response = await axios.get(
@@ -47,14 +46,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getCoordenates();
+    fetchNearbyCities();
   }, []);
-
-  useEffect(() => {
-    if (coords) {
-      fetchNearbyCities(coords);
-    }
-  }, [coords]);
 
   return (
     <div className="w-full flex flex-col h-screen items-center">
@@ -64,7 +57,7 @@ const Home = () => {
         }`}
       />
       <Navbar toggleSidebar={toggleSidebar} />
-      <CurrCity />
+      <CurrCity getCoordinates={getCoordinates} />
       {nearbyCities.length > 0 ? (
         <div className="w-full lg:w-2/3 h-1/4">
           <h1 className="text-2xl lg:text-4xl font-bold my-2 mx-4 border-b border-gray-300">

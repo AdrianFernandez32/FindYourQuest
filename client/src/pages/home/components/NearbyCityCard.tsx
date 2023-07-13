@@ -3,13 +3,11 @@ import { ICity } from "../../../assets/interfaces/City";
 import defaultcity from "../../../assets/images/defaultcity.png";
 
 const NearbyCityCard = (props: { city: ICity }) => {
-  const APIKey = "AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc";
-
   return (
     <div className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden">
       {props.city.googlePlacesPhotoReference ? (
         <img
-          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${props.city.googlePlacesPhotoReference}&key=${APIKey}`}
+          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${props.city.googlePlacesPhotoReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
           alt={props.city.city}
           className="w-full h-2/3 object-cover"
         />

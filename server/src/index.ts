@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import googleRoutes from "./routes/google/places.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 
 app.use(
