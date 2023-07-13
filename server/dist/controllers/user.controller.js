@@ -8,8 +8,17 @@ export async function createUser(req, res) {
     try {
         const newUser = req.body;
         const conn = await connect();
-        const query = "INSERT INTO User SET ?";
-        await conn.query(query, newUser);
+        const checkEmailQuery = "SELECT * FROM User WHERE email = ?";
+        const [existingUser] = await conn.query(checkEmailQuery, [
+            newUser.email,
+        ]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({
+                message: "The email is already in use.",
+            });
+        }
+        const insertQuery = "INSERT INTO User SET ?";
+        await conn.query(insertQuery, newUser);
         return res.json({
             message: "Post Created",
         });
