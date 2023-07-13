@@ -1,21 +1,9 @@
-import express from "express";
-import cors from "cors";
-import googleRoutes from "./routes/google/places.js";
 import dotenv from "dotenv";
-dotenv.config();
-const app = express();
-app.use(cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-}));
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: "Server error, something went wrong" });
-});
-app.use("/google", googleRoutes);
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-    console.log(`Server is running in http://localhost:${PORT}`);
-});
+import { App } from "./app.js";
+async function main() {
+    dotenv.config();
+    const app = new App(process.env.PORT || 3001);
+    await app.listen();
+}
+main();
 //# sourceMappingURL=index.js.map
