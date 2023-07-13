@@ -3,22 +3,16 @@ import { stat } from "fs";
 import React, { useEffect, useState } from "react";
 import { Spinner } from "@chakra-ui/react";
 
-const CurrCity = () => {
+const CurrCity = ({ getCoordinates }: any) => {
   const [imageReference, setImageReference] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
 
-  const APIKey = "AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc";
-
   const fetchImage = async () => {
+    const coords = await getCoordinates();
+
     try {
-      const position: any = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-
-      const { latitude, longitude } = position.coords;
-
-      const geocodeApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${APIKey}`;
+      const geocodeApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.latitude},${coords.longitude}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`;
       const response = await axios.get(geocodeApiUrl);
       if (response.data.status === "OK") {
         const data = response.data;
@@ -84,7 +78,7 @@ const CurrCity = () => {
 
   if (imageReference === "") {
     return (
-      <div className="w-full lg:w-2/3 h-1/3 lg:h-1/2 flex flex-col justify-center items-center border border-gray-300">
+      <div className="w-full lg:w-2/3 h-1/4 lg:h-[42%] flex flex-col justify-center items-center border border-gray-300">
         <Spinner
           thickness="4px"
           speed="0.65s"
@@ -100,15 +94,15 @@ const CurrCity = () => {
   }
 
   return (
-    <div className="w-full lg:w-2/3 h-1/3 lg:h-1/2 overflow-hidden relative">
+    <div className="w-full lg:w-2/3 h-1/4 lg:h-[42%] overflow-hidden relative">
       <img
         className="w-full h-full object-cover"
-        src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${imageReference}&key=${APIKey}`}
+        src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${imageReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
         alt="Place Photo"
       />
       <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-end items-start p-4">
-        <p className="text-white text-xl font-bold">You're in</p>
-        <p className="text-white text-2xl font-extrabold">
+        <p className="text-white text-xl lg:text-3xl font-bold">You're in</p>
+        <p className="text-white text-2xl lg:text-4xl font-extrabold">
           {city + ", " + state}
         </p>
       </div>

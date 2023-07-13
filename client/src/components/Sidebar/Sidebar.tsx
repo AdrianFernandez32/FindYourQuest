@@ -30,7 +30,7 @@ const options = [
 const Sidebar = ({ open, toggleSidebar }: Props) => {
   return (
     <div
-      className={`h-screen fixed bg-white duration-75 right-0 flex justify-center items-center overflow-x-hidden sm:border-l sm:border-gray-300 ${
+      className={`h-screen fixed bg-white z-20 duration-75 right-0 flex justify-center items-center overflow-x-hidden sm:border-l sm:border-gray-300 ${
         open ? "w-5/6 md:w-[30%] lg:w-[23%]" : "w-0"
       }`}
     >

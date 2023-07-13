@@ -4,14 +4,13 @@ import { stat } from "fs";
 import { error } from "console";
 
 const googleRoutes = express.Router();
-const APIKey = "AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc";
 
 const getPlaceId = async (city: any, state: any) => {
   try {
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${
         city + " " + state
-      }&types=(cities)&key=${APIKey}`
+      }&types=(cities)&key=${process.env.GOOGLE_API_KEY}`
     );
     if (response.data.predictions.length > 0) {
       return response.data.predictions[0].place_id;
@@ -26,7 +25,7 @@ const getPlaceId = async (city: any, state: any) => {
 const getPhotoReference = async (placeId: string) => {
   try {
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=photo&key=${APIKey}`
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=photo&key=${process.env.GOOGLE_API_KEY}`
     );
     if (response.data.result.photos.length > 0) {
       return response.data.result.photos[0].photo_reference;
@@ -41,7 +40,7 @@ const getPhotoReference = async (placeId: string) => {
 const getNearbyCities = async (latitude: any, longitude: any) => {
   try {
     const response = await axios.get(
-      `http://api.geonames.org/findNearbyJSON?lat=${latitude}&lng=${longitude}&cities=cities1000&radius=50&maxRows=10&username=adrianfersa`
+      `http://api.geonames.org/findNearbyJSON?lat=${latitude}&lng=${longitude}&cities=cities1000&radius=50&maxRows=10&username=${process.env.GEONAMES_USERNAME}`
     );
 
     if (response.data.geonames && response.data.geonames.length > 0) {
@@ -85,29 +84,31 @@ googleRoutes.get("/nearbyCities", async (req, res, next) => {
   try {
     const cities = await getNearbyCities(latitude, longitude);
 
-    const updatedCities = [];
-    for (const city of cities) {
-      const { city: cityName, state, distance } = city;
+    const updatedCities = await Promise.all(
+      cities.map(async (city) => {
+        const { city: cityName, state, distance } = city;
 
-      try {
-        const placeId = await getPlaceId(cityName, state);
-        if (placeId) {
-          const photoReference = await getPhotoReference(placeId);
-          const updatedCity = {
-            city: cityName,
-            state,
-            distance,
-            googlePlaceId: placeId,
-            googlePlacesPhotoReference: photoReference,
-          };
-          updatedCities.push(updatedCity);
+        try {
+          const placeId = await getPlaceId(cityName, state);
+          if (placeId) {
+            const photoReference = await getPhotoReference(placeId);
+            return {
+              city: cityName,
+              state,
+              distance,
+              googlePlaceId: placeId,
+              googlePlacesPhotoReference: photoReference,
+            };
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    }
+      })
+    );
 
-    res.json({ nearbyCities: updatedCities });
+    const filteredCities = updatedCities.filter((city) => city !== undefined);
+
+    res.json({ nearbyCities: filteredCities });
   } catch (error) {
     next(error);
   }
