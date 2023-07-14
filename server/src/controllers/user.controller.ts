@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { connect } from "../database.js";
 import { IUser } from "../interfaces/user.interface.js";
+import bcrypt from "bcrypt";
 
 export async function getUsers(req: Request, res: Response): Promise<Response> {
   const conn = await connect();
@@ -15,6 +16,8 @@ export async function createUser(
   try {
     const newUser: IUser = req.body;
     const conn = await connect();
+    const salt = await bcrypt.genSalt(10);
+    newUser.password = await bcrypt.hash(newUser.password, salt);
     const checkEmailQuery = "SELECT * FROM User WHERE email = ?";
     const [existingUser]: any[] = await conn.query(checkEmailQuery, [
       newUser.email,
@@ -29,12 +32,12 @@ export async function createUser(
     const insertQuery = "INSERT INTO User SET ?";
     await conn.query(insertQuery, newUser);
     return res.json({
-      message: "Post Created",
+      message: "User Created",
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "An error occurred while creating the post.",
+      message: "An error occurred while creating the User.",
       error: error.message,
     });
   }
@@ -64,6 +67,6 @@ export async function updateUser(req: Request, res: Response) {
     `UPDATE User SET first_name='${updatePost.first_name}', last_name='${updatePost.last_name}', password='${updatePost.password}' WHERE id = ${id}`
   );
   return res.json({
-    message: "Post updated",
+    message: "User updated",
   });
 }

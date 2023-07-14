@@ -1,4 +1,5 @@
 import { connect } from "../database.js";
+import bcrypt from "bcrypt";
 export async function getUsers(req, res) {
     const conn = await connect();
     const users = await conn.query("SELECT * from User");
@@ -8,6 +9,8 @@ export async function createUser(req, res) {
     try {
         const newUser = req.body;
         const conn = await connect();
+        const salt = await bcrypt.genSalt(10);
+        newUser.password = await bcrypt.hash(newUser.password, salt);
         const checkEmailQuery = "SELECT * FROM User WHERE email = ?";
         const [existingUser] = await conn.query(checkEmailQuery, [
             newUser.email,
@@ -20,13 +23,13 @@ export async function createUser(req, res) {
         const insertQuery = "INSERT INTO User SET ?";
         await conn.query(insertQuery, newUser);
         return res.json({
-            message: "Post Created",
+            message: "User Created",
         });
     }
     catch (error) {
         console.error(error);
         return res.status(500).json({
-            message: "An error occurred while creating the post.",
+            message: "An error occurred while creating the User.",
             error: error.message,
         });
     }
@@ -51,7 +54,7 @@ export async function updateUser(req, res) {
     const conn = await connect();
     const user = await conn.query(`UPDATE User SET first_name='${updatePost.first_name}', last_name='${updatePost.last_name}', password='${updatePost.password}' WHERE id = ${id}`);
     return res.json({
-        message: "Post updated",
+        message: "User updated",
     });
 }
 //# sourceMappingURL=user.controller.js.map
