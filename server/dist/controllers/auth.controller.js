@@ -5,13 +5,14 @@ export async function authentication(req, res) {
     try {
         const newLogin = req.body;
         const conn = await connect();
-        const query = `SELECT id, password FROM User WHERE email = ?`;
+        const query = `SELECT id, password, email, first_name, last_name, trips FROM User WHERE email = ?`;
         const [users] = await conn.query(query, [newLogin.email]);
         const user = users[0];
         if (user) {
             const validPassword = await bcrypt.compare(newLogin.password, user.password);
             if (validPassword) {
-                jwt.sign({ user }, "secretkey", (err, token) => {
+                delete user.password;
+                jwt.sign(user, "secretkey", (err, token) => {
                     res.json({
                         token,
                     });
@@ -28,6 +29,35 @@ export async function authentication(req, res) {
                 message: "User not found",
             });
         }
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "An error occurred.",
+            error: error.message,
+        });
+    }
+}
+export async function verifyToken(req, res) {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({
+                message: "No token provided.",
+            });
+        }
+        jwt.verify(token, "secretkey", (err, decoded) => {
+            if (err) {
+                return res.status(401).json({
+                    message: "Unauthorized!",
+                    error: err,
+                });
+            }
+            return res.status(200).json({
+                message: "Token is valid",
+                user: decoded,
+            });
+        });
     }
     catch (error) {
         console.error(error);

@@ -6,12 +6,11 @@ import axios from "axios";
 import { Spinner } from "@chakra-ui/react";
 import { ICity } from "../../assets/interfaces/City";
 import NearbyCityCard from "./components/NearbyCityCard";
-import { resolve } from "path";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [nearbyCities, setNearbyCities] = useState<ICity[]>([]);
-  const username = "adrianfersa";
+  const [user, setUser] = useState(null);
 
   const toggleSidebar = () => {
     setOpen(!open);
@@ -45,8 +44,30 @@ const Home = () => {
     }
   };
 
+  const getUserInfo = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/login/verifyToken",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.user) {
+        console.log(response.data);
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchNearbyCities();
+    getUserInfo();
   }, []);
 
   return (
@@ -80,7 +101,7 @@ const Home = () => {
         </div>
       )}
 
-      <Sidebar open={open} toggleSidebar={toggleSidebar} />
+      <Sidebar open={open} toggleSidebar={toggleSidebar} user={user} />
     </div>
   );
 };

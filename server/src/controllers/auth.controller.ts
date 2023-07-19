@@ -9,7 +9,7 @@ export async function authentication(req: Request, res: Response) {
     const newLogin: ILogin = req.body;
     const conn = await connect();
 
-    const query = `SELECT id, password FROM User WHERE email = ?`;
+    const query = `SELECT id, password, email, first_name, last_name, trips FROM User WHERE email = ?`;
     const [users]: any[] = await conn.query(query, [newLogin.email]);
     const user = users[0];
 
@@ -20,7 +20,9 @@ export async function authentication(req: Request, res: Response) {
       );
 
       if (validPassword) {
-        jwt.sign({ user }, "secretkey", (err: any, token: any) => {
+        delete user.password;
+
+        jwt.sign(user, "secretkey", (err: any, token: any) => {
           res.json({
             token,
           });
@@ -35,6 +37,37 @@ export async function authentication(req: Request, res: Response) {
         message: "User not found",
       });
     }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "An error occurred.",
+      error: error.message,
+    });
+  }
+}
+
+export async function verifyToken(req: Request, res: Response) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token provided.",
+      });
+    }
+
+    jwt.verify(token, "secretkey", (err: any, decoded: any) => {
+      if (err) {
+        return res.status(401).json({
+          message: "Unauthorized!",
+          error: err,
+        });
+      }
+      return res.status(200).json({
+        message: "Token is valid",
+        user: decoded,
+      });
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
