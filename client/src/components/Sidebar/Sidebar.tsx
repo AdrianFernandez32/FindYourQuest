@@ -20,14 +20,17 @@ const options = [
   {
     name: "Home",
     icon: <AiFillHome size="2em" />,
+    route: "/",
   },
   {
     name: "Search",
     icon: <IoMdSearch size="2em" />,
+    route: "/search",
   },
   {
     name: "Plan my trip",
     icon: <BiSolidPlaneAlt size="2em" />,
+    route: "/planmytrip",
   },
 ];
 
@@ -95,6 +98,7 @@ const Sidebar = ({ open, toggleSidebar, user }: Props) => {
                 name={options.name}
                 icon={options.icon}
                 key={options.name}
+                route={options.route}
               />
             ))}
           </div>
