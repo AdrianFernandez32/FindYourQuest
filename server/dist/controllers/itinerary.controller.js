@@ -6,10 +6,10 @@ export async function getItineraries(req, res) {
 }
 export async function createItinerary(req, res) {
     try {
-        const newTrip = req.body;
+        const newItinerary = req.body;
         const conn = await connect();
         const insertQuery = "INSERT INTO Itinerary SET ?";
-        await conn.query(insertQuery, newTrip);
+        await conn.query(insertQuery, newItinerary);
         return res.json({
             message: "Itinerary created",
         });
@@ -28,11 +28,11 @@ export async function getItinerary(req, res) {
     const itinerary = await conn.query(`SELECT * FROM Itinerary WHERE id = ${id}`);
     return res.json(itinerary[0]);
 }
-export async function deleteTrip(req, res) {
+export async function deleteItinerary(req, res) {
     const id = req.params.postId;
     const conn = await connect();
     try {
-        const trip = await conn.query(`DELETE FROM Itinerary WHERE id = ${id}`);
+        const itinerary = await conn.query(`DELETE FROM Itinerary WHERE id = ${id}`);
         return res.json({
             message: "Itinerary deleted",
         });
@@ -45,12 +45,12 @@ export async function deleteTrip(req, res) {
         });
     }
 }
-export async function updateTrip(req, res) {
+export async function updateItinerary(req, res) {
     const id = req.params.postId;
-    const updatedTrip = req.body;
+    const updatedItinerary = req.body;
     const conn = await connect();
     try {
-        const trip = await conn.query(`UPDATE Trip SET active=${updatedTrip.active}`);
+        const itinerary = await conn.query(`UPDATE Itinerary SET active=${updatedItinerary.active} WHERE id=${id}`);
         return res.json({
             message: "Flight Updated",
         });

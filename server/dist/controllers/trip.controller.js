@@ -4,14 +4,14 @@ export async function getTrips(req, res) {
     const trips = await conn.query("SELECT * FROM Trip");
     return res.json(trips[0]);
 }
-export async function createTrips(req, res) {
+export async function createTrip(req, res) {
     try {
         const conn = await connect();
         const newTrip = req.body;
         const insertQuery = "INSERT INTO Trip SET ?";
         await conn.query(insertQuery, newTrip);
         return res.json({
-            message: "Flight created",
+            message: "Trip created",
         });
     }
     catch (error) {
@@ -61,13 +61,13 @@ export async function updateTrip(req, res) {
     try {
         const user = await conn.query(`UPDATE Trip SET start_date='${updatedTrip.start_date}', end_date='${updatedTrip.end_date}', budget=${updatedTrip.budget}, city_name='${updatedTrip.city_name}', flight_in_id=${updatedTrip.flight_in_id}, flight_out_id=${updatedTrip.flight_out_id}, hotel_id=${updatedTrip.hotel_id}`);
         return res.json({
-            message: "Flight Updated",
+            message: "Trip Updated",
         });
     }
     catch (error) {
         console.error(error);
         return res.status(500).json({
-            message: "Error deleting flight",
+            message: "Error deleting trip",
             error: error.message,
         });
     }

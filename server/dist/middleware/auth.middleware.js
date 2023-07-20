@@ -3,7 +3,6 @@ const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({ message: "Unauthorized" });
-        console.log(authHeader);
     }
     const token = authHeader.split(" ")[1];
     try {
