@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { connect } from "../database.js";
-import { ITrip } from "../interfaces/trip.controller.js";
+import { ITrip } from "../interfaces/trip.interface.js";
 
 export async function getTrips(req: Request, res: Response): Promise<Response> {
   const conn = await connect();
