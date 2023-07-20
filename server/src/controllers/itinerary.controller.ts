@@ -68,7 +68,7 @@ export async function updateTrip(req: Request, res: Response) {
   const conn = await connect();
   try {
     const trip = await conn.query(
-      `UPDATE Trip SET active=${updatedTrip.active}`
+      `UPDATE Trip SET active=${updatedTrip.active} WHERE id=${id}`
     );
     return res.json({
       message: "Flight Updated",
