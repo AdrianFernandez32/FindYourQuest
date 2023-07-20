@@ -66,7 +66,7 @@ export async function updateFlight(req: Request, res: Response) {
   const conn = await connect();
   try {
     const user = await conn.query(
-      `UPDATE User SET departure='${updatedFlight.departure}', landing='${updatedFlight.landing}', airline='${updatedFlight.airline}', departure_airport='${updatedFlight.departure_airport}', landing_airport='${updatedFlight.landing_airport}' WHERE id=${id}`
+      `UPDATE Flight SET departure='${updatedFlight.departure}', landing='${updatedFlight.landing}', airline='${updatedFlight.airline}', departure_airport='${updatedFlight.departure_airport}', landing_airport='${updatedFlight.landing_airport}' WHERE id=${id}`
     );
     return res.json({
       message: "Flight Updated",

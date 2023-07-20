@@ -48,16 +48,13 @@ export async function getHotel(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function updateHotel(
-  req: Request,
-  res: Response
-): Promise<Response> {
+export async function updateHotel(req: Request, res: Response) {
   const id = req.params.postId;
   const updatedHotel: IHotel = req.body;
   const conn = await connect();
   try {
     const user = await conn.query(
-      `UPDATE user SET checkin='${updatedHotel.checkin}', checkout='${updatedHotel.checkout}', place_id='${updatedHotel.place_id}' WHERE id = ${id}`
+      `UPDATE Hotel SET checkin='${updatedHotel.checkin}', checkout='${updatedHotel.checkout}', place_id='${updatedHotel.place_id}' WHERE id = ${id}`
     );
     return res.json({
       message: "User updated",
@@ -66,6 +63,24 @@ export async function updateHotel(
     console.error(error);
     return res.status(500).json({
       message: "Something went wrong",
+      error: error.message,
+    });
+  }
+}
+
+export async function deleteHotel(req: Request, res: Response) {
+  const id = req.params.postId;
+  const conn = await connect();
+  try {
+    const hotel = await conn.query(`DELETE FROM Hotel WHERE id=${id}`);
+    return res.json({
+      message: "Hotel deleted",
+    });
+  } catch (error) {
+    console.error(error);
+    console.error(error);
+    return res.status(500).json({
+      message: "Error deleting the hotel",
       error: error.message,
     });
   }
