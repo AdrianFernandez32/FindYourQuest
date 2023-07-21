@@ -59,7 +59,7 @@ export async function updateTrip(req, res) {
     const updatedTrip = req.body;
     const conn = await connect();
     try {
-        const user = await conn.query(`UPDATE Trip SET start_date='${updatedTrip.start_date}', end_date='${updatedTrip.end_date}', budget=${updatedTrip.budget}, city_name='${updatedTrip.city_name}', flight_in_id=${updatedTrip.flight_in_id}, flight_out_id=${updatedTrip.flight_out_id}, hotel_id=${updatedTrip.hotel_id}`);
+        const user = await conn.query(`UPDATE Trip SET start_date='${updatedTrip.start_date}', end_date='${updatedTrip.end_date}', budget=${updatedTrip.budget}, city_name='${updatedTrip.city_id}', flight_in_id=${updatedTrip.flight_in_id}, flight_out_id=${updatedTrip.flight_out_id}, hotel_id=${updatedTrip.hotel_id}`);
         return res.json({
             message: "Trip Updated",
         });

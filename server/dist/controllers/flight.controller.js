@@ -9,8 +9,9 @@ export async function createFlight(req, res) {
         const newFlight = req.body;
         const conn = await connect();
         const insertQuery = "INSERT INTO Flight SET ?";
-        await conn.query(insertQuery, newFlight);
+        const response = await conn.query(insertQuery, newFlight);
         return res.json({
+            response: response,
             message: "Flight Created",
         });
     }

@@ -51,6 +51,15 @@ const getNearbyCities = async (latitude, longitude) => {
         return [];
     }
 };
+const getSuggestions = async (text) => {
+    try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}&types=(cities)&key=${process.env.GOOGLE_API_KEY}`);
+        return response.data.predictions;
+    }
+    catch (error) {
+        console.error(error);
+    }
+};
 googleRoutes.get("/cityInfo", async (req, res, next) => {
     const { city, state } = req.query;
     try {
@@ -95,6 +104,19 @@ googleRoutes.get("/nearbyCities", async (req, res, next) => {
     }
     catch (error) {
         next(error);
+    }
+});
+googleRoutes.get("/suggestedCities", async (req, res) => {
+    const { input } = req.query;
+    try {
+        const suggestions = await getSuggestions(input);
+        return res.json(suggestions);
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: "Error",
+            error: error.message,
+        });
     }
 });
 googleRoutes.get("/api", (req, res) => {
