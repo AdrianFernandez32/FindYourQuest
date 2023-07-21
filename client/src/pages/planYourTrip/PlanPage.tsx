@@ -35,6 +35,8 @@ const PlanPage = () => {
   const flightModal = useDisclosure();
   const hotelModal = useDisclosure();
 
+  console.log(trip);
+
   return (
     <Layout>
       <div className="w-full h-20 flex justify-center text-3xl md:text-4xl font-bold m-8">
