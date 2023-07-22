@@ -15,7 +15,11 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ITrip, defaultTrip } from "../../assets/interfaces/Trip";
+import { IHotel, defaultHotel } from "../../assets/interfaces/Hotel";
 import TripForm from "./components/TripForm";
+import { IFlight, defaultFlight } from "../../assets/interfaces/Flight";
+import FlightModal from "./components/FlightsModal";
+import HotelModal from "./components/HotelModal";
 
 const options = [
   {
@@ -32,10 +36,11 @@ const options = [
 
 const PlanPage = () => {
   const [trip, setTrip] = useState<ITrip>(defaultTrip);
+  const [hotel, setHotel] = useState<IHotel>(defaultHotel);
+  const [flightIn, setFlightIn] = useState<IFlight>(defaultFlight);
+  const [flightOut, setFlightOut] = useState<IFlight>(defaultFlight);
   const flightModal = useDisclosure();
   const hotelModal = useDisclosure();
-
-  console.log(trip);
 
   return (
     <Layout>
@@ -58,31 +63,18 @@ const PlanPage = () => {
       </div>
       <Calendar />
 
-      <Modal isOpen={flightModal.isOpen} onClose={flightModal.onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Flights</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Button colorScheme="blue" mr={3} onClick={flightModal.onClose}>
-              Close
-            </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <FlightModal
+        isOpen={flightModal.isOpen}
+        onClose={flightModal.onClose}
+        setFlightIn={setFlightIn}
+        setFlightOut={setFlightOut}
+      />
 
-      <Modal isOpen={hotelModal.isOpen} onClose={hotelModal.onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Hotel</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Button colorScheme="blue" mr={3} onClick={hotelModal.onClose}>
-              Close
-            </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <HotelModal
+        isOpen={hotelModal.isOpen}
+        onClose={hotelModal.onClose}
+        setHotel={setHotel}
+      />
     </Layout>
   );
 };

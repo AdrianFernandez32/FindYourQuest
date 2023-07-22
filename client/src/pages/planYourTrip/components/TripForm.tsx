@@ -35,7 +35,6 @@ const TripForm: React.FC<TripFormProps> = ({ setTrip }) => {
       axios
         .get(`http://localhost:3001/google/suggestedCities?input=${search}`)
         .then((res) => {
-          console.log(res.data);
           setSuggestions(res.data);
         })
         .catch((error) => {
@@ -114,8 +113,6 @@ const TripForm: React.FC<TripFormProps> = ({ setTrip }) => {
                               borderColor="gray.200"
                               className="bg-white duration-150 cursor-pointer hover:bg-[#0096FF] hover:text-white hover:font-medium"
                               onMouseDown={() => {
-                                console.log("hola");
-                                console.log(suggestion.description);
                                 setSearch(suggestion.description);
                                 form.setFieldValue(
                                   "city_id",

@@ -4,3 +4,9 @@ export interface IHotel {
   checkout: Date;
   place_id: string;
 }
+
+export const defaultHotel: IHotel = {
+  checkin: new Date(),
+  checkout: new Date(),
+  place_id: "",
+};

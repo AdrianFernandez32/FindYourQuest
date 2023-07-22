@@ -24,7 +24,6 @@ const Layout = ({ children }: any) => {
         }
       );
       if (response.data.user) {
-        console.log(response.data);
         setUser(response.data.user);
       }
     } catch (error) {
