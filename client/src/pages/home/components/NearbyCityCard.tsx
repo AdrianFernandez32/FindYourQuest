@@ -1,10 +1,16 @@
 import React from "react";
 import { ICity } from "../../../assets/interfaces/City";
 import defaultcity from "../../../assets/images/defaultcity.png";
+import { useNavigate } from "react-router";
 
 const NearbyCityCard = (props: { city: ICity }) => {
+  const navigate = useNavigate();
+  console.log(props.city);
   return (
-    <div className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden">
+    <div
+      className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden cursor-pointer duration-200 hover:scale-105"
+      onClick={() => navigate(`/city/${props.city.googlePlaceId}`)}
+    >
       {props.city.googlePlacesPhotoReference ? (
         <img
           src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${props.city.googlePlacesPhotoReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}

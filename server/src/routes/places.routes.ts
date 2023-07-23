@@ -22,7 +22,7 @@ const getPlaceId = async (city: any, state: any) => {
   }
 };
 
-const getPhotoReference = async (placeId: string) => {
+const getPhotoReference = async (placeId: string | any) => {
   try {
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=photo&key=${process.env.GOOGLE_API_KEY}`
@@ -61,6 +61,17 @@ const getNearbyCities = async (latitude: any, longitude: any) => {
     return [];
   }
 };
+
+googleRoutes.get("/cityImage", async (req, res, next) => {
+  const { id } = req.query;
+
+  try {
+    const photoReference = await getPhotoReference(id);
+    res.json({ photoReference });
+  } catch (error) {
+    next(error);
+  }
+});
 
 googleRoutes.get("/cityInfo", async (req, res, next) => {
   const { city, state } = req.query;

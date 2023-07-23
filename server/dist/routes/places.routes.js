@@ -51,6 +51,16 @@ const getNearbyCities = async (latitude, longitude) => {
         return [];
     }
 };
+googleRoutes.get("/cityImage", async (req, res, next) => {
+    const { id } = req.query;
+    try {
+        const photoReference = await getPhotoReference(id);
+        res.json({ photoReference });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 googleRoutes.get("/cityInfo", async (req, res, next) => {
     const { city, state } = req.query;
     try {
