@@ -59,7 +59,7 @@ const Home = () => {
           <div className="w-full p-3">
             <div className="grid w-full grid-flow-row auto-rows-max gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-3 md:p-0 items-center">
               {nearbyCities.map((city) => {
-                return <NearbyCityCard key={city.placeId} city={city} />;
+                return <NearbyCityCard key={city.googlePlaceId} city={city} />;
               })}
             </div>
           </div>
