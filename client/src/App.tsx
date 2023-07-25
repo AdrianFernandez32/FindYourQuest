@@ -5,11 +5,8 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import VerifyRoute from "./components/ProtectedRoute/VerifyRoute";
 import LoggedUser from "./components/ProtectedRoute/LoggedUser";
-<<<<<<< HEAD
 import PlanPage from "./pages/planYourTrip/PlanPage";
-=======
 import CityPage from "./pages/citypage/CityPage";
->>>>>>> main
 
 function App() {
   return (

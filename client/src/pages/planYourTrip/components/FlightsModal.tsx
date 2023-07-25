@@ -14,7 +14,9 @@ import {
   ModalOverlay,
   VStack,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { Field, Form, Formik } from "formik";
+import { useEffect, useState } from "react";
 import { BiSolidPlaneLand, BiSolidPlaneTakeOff } from "react-icons/bi";
 import * as Yup from "yup";
 
@@ -32,6 +34,95 @@ const validationSchema = Yup.object({
 });
 
 const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
+  const [searchFinin, setSearchFinin] = useState("");
+  const [suggestionsFinin, setSuggestionsFinin] = useState<
+    { place_id: string; description: string }[]
+  >([]);
+  const [searchFinout, setSearchFinout] = useState("");
+  const [suggestionsFinout, setSuggestionsFinout] = useState<
+    { place_id: string; description: string }[]
+  >([]);
+  const [searchFoutin, setSearchFoutin] = useState("");
+  const [suggestionsFoutin, setSuggestionsFoutin] = useState<
+    { place_id: string; description: string }[]
+  >([]);
+  const [searchFoutout, setSearchFoutout] = useState("");
+  const [suggestionsFoutout, setSuggestionsFoutout] = useState<
+    { place_id: string; description: string }[]
+  >([]);
+  const [isFocusedFinin, setIsFocusedFinin] = useState(false);
+  const [isFocusedFinout, setIsFocusedFinout] = useState(false);
+  const [isFocusedFoutin, setIsFocusedFoutin] = useState(false);
+  const [isFocusedFoutout, setIsFocusedFoutout] = useState(false);
+
+  useEffect(() => {
+    if (searchFinin.length > 1) {
+      axios
+        .get(
+          `http://localhost:3001/google/suggestedEstablishments?input=${searchFinin}`
+        )
+        .then((res) => {
+          setSuggestionsFinin(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setSuggestionsFinin([]);
+    }
+  }, [searchFinin]);
+
+  useEffect(() => {
+    if (searchFinout.length > 1) {
+      axios
+        .get(
+          `http://localhost:3001/google/suggestedEstablishments?input=${searchFinout}`
+        )
+        .then((res) => {
+          setSuggestionsFinout(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setSuggestionsFinout([]);
+    }
+  }, [searchFinout]);
+
+  useEffect(() => {
+    if (searchFoutin.length > 1) {
+      axios
+        .get(
+          `http://localhost:3001/google/suggestedEstablishments?input=${searchFoutin}`
+        )
+        .then((res) => {
+          setSuggestionsFoutin(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setSuggestionsFoutin([]);
+    }
+  }, [searchFoutin]);
+
+  useEffect(() => {
+    if (searchFoutout.length > 1) {
+      axios
+        .get(
+          `http://localhost:3001/google/suggestedEstablishments?input=${searchFoutout}`
+        )
+        .then((res) => {
+          setSuggestionsFoutout(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setSuggestionsFoutout([]);
+    }
+  }, [searchFoutout]);
+
   const setFlights = (values: any) => {
     setFlightIn({
       departure: values.aDeparture,
@@ -122,7 +213,49 @@ const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
                               {...field}
                               id="aDeparture_airport"
                               type="text"
+                              autoComplete="off"
+                              value={searchFinin}
+                              onChange={(e) => {
+                                setSearchFinin(e.target.value);
+                              }}
+                              onFocus={() => setIsFocusedFinin(true)}
+                              onBlur={() => setIsFocusedFinin(false)}
                             />
+                            {isFocusedFinin && (
+                              <Box
+                                mt={2}
+                                boxShadow="md"
+                                borderRadius="md"
+                                position="absolute"
+                                width="100%"
+                                zIndex="1"
+                                bg="white"
+                              >
+                                {suggestionsFinin
+                                  .slice(0, 5)
+                                  .map((suggestion) => (
+                                    <Box
+                                      key={suggestion.place_id}
+                                      p={2}
+                                      borderBottom="1px solid"
+                                      borderColor="gray.200"
+                                      className="bg-white duration-150 cursor-pointer hover:bg-[#0096FF] hover:text-white hover:font-medium"
+                                      onMouseDown={() => {
+                                        setSearchFinin(suggestion.description);
+                                        form.setFieldValue(
+                                          "aDeparture_airport",
+                                          suggestion.place_id
+                                        );
+                                        setIsFocusedFinin(false);
+                                      }}
+                                    >
+                                      <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                                        {suggestion.description}
+                                      </p>
+                                    </Box>
+                                  ))}
+                              </Box>
+                            )}
                           </FormControl>
                         )}
                       </Field>
@@ -136,7 +269,49 @@ const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
                               {...field}
                               id="aLanding_airport"
                               type="text"
+                              autoComplete="off"
+                              value={searchFinout}
+                              onChange={(e) => {
+                                setSearchFinout(e.target.value);
+                              }}
+                              onFocus={() => setIsFocusedFinout(true)}
+                              onBlur={() => setIsFocusedFinout(false)}
                             />
+                            {isFocusedFinout && (
+                              <Box
+                                mt={2}
+                                boxShadow="md"
+                                borderRadius="md"
+                                position="absolute"
+                                width="100%"
+                                zIndex="1"
+                                bg="white"
+                              >
+                                {suggestionsFinout
+                                  .slice(0, 5)
+                                  .map((suggestion) => (
+                                    <Box
+                                      key={suggestion.place_id}
+                                      p={2}
+                                      borderBottom="1px solid"
+                                      borderColor="gray.200"
+                                      className="bg-white duration-150 cursor-pointer hover:bg-[#0096FF] hover:text-white hover:font-medium"
+                                      onMouseDown={() => {
+                                        setSearchFinout(suggestion.description);
+                                        form.setFieldValue(
+                                          "aLanding_airport",
+                                          suggestion.place_id
+                                        );
+                                        setIsFocusedFinout(false);
+                                      }}
+                                    >
+                                      <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                                        {suggestion.description}
+                                      </p>
+                                    </Box>
+                                  ))}
+                              </Box>
+                            )}
                           </FormControl>
                         )}
                       </Field>
@@ -181,7 +356,49 @@ const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
                               {...field}
                               id="dDeparture_airport"
                               type="text"
+                              autoComplete="off"
+                              value={searchFoutin}
+                              onChange={(e) => {
+                                setSearchFoutin(e.target.value);
+                              }}
+                              onFocus={() => setIsFocusedFoutin(true)}
+                              onBlur={() => setIsFocusedFoutin(false)}
                             />
+                            {isFocusedFoutin && (
+                              <Box
+                                mt={2}
+                                boxShadow="md"
+                                borderRadius="md"
+                                position="absolute"
+                                width="100%"
+                                zIndex="1"
+                                bg="white"
+                              >
+                                {suggestionsFoutin
+                                  .slice(0, 5)
+                                  .map((suggestion) => (
+                                    <Box
+                                      key={suggestion.place_id}
+                                      p={2}
+                                      borderBottom="1px solid"
+                                      borderColor="gray.200"
+                                      className="bg-white duration-150 cursor-pointer hover:bg-[#0096FF] hover:text-white hover:font-medium"
+                                      onMouseDown={() => {
+                                        setSearchFoutin(suggestion.description);
+                                        form.setFieldValue(
+                                          "dDeparture_airport",
+                                          suggestion.place_id
+                                        );
+                                        setIsFocusedFoutin(false);
+                                      }}
+                                    >
+                                      <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                                        {suggestion.description}
+                                      </p>
+                                    </Box>
+                                  ))}
+                              </Box>
+                            )}
                           </FormControl>
                         )}
                       </Field>
@@ -195,7 +412,51 @@ const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
                               {...field}
                               id="dLanding_airport"
                               type="text"
+                              autoComplete="off"
+                              value={searchFoutout}
+                              onChange={(e) => {
+                                setSearchFoutout(e.target.value);
+                              }}
+                              onFocus={() => setIsFocusedFoutout(true)}
+                              onBlur={() => setIsFocusedFoutout(false)}
                             />
+                            {isFocusedFoutout && (
+                              <Box
+                                mt={2}
+                                boxShadow="md"
+                                borderRadius="md"
+                                position="absolute"
+                                width="100%"
+                                zIndex="1"
+                                bg="white"
+                              >
+                                {suggestionsFoutout
+                                  .slice(0, 5)
+                                  .map((suggestion) => (
+                                    <Box
+                                      key={suggestion.place_id}
+                                      p={2}
+                                      borderBottom="1px solid"
+                                      borderColor="gray.200"
+                                      className="bg-white duration-150 cursor-pointer hover:bg-[#0096FF] hover:text-white hover:font-medium"
+                                      onMouseDown={() => {
+                                        setSearchFoutout(
+                                          suggestion.description
+                                        );
+                                        form.setFieldValue(
+                                          "dLanding_airport",
+                                          suggestion.place_id
+                                        );
+                                        setIsFocusedFoutout(false);
+                                      }}
+                                    >
+                                      <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                                        {suggestion.description}
+                                      </p>
+                                    </Box>
+                                  ))}
+                              </Box>
+                            )}
                           </FormControl>
                         )}
                       </Field>

@@ -31,7 +31,7 @@ const TripForm: React.FC<TripFormProps> = ({ setTrip }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
-    if (search.length > 2) {
+    if (search.length > 1) {
       axios
         .get(`http://localhost:3001/google/suggestedCities?input=${search}`)
         .then((res) => {

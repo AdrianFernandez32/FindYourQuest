@@ -72,14 +72,30 @@ const getNearbyCities = async (latitude: any, longitude: any) => {
   }
 };
 
-<<<<<<< HEAD
 const getSuggestions = async (text: any) => {
   try {
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}&types=(cities)&key=${process.env.GOOGLE_API_KEY}`
     );
     return response.data.predictions;
-=======
+  } catch (error) {
+    console.error(error);
+    return error.message;
+  }
+};
+
+const getEstablishmentsSuggestions = async (text: any) => {
+  try {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}&types=establishment&key=${process.env.GOOGLE_API_KEY}`
+    );
+    return response.data.predictions;
+  } catch (error) {
+    console.error(error);
+    return error.message;
+  }
+};
+
 const getCityCoordinates = async (placeId) => {
   console.log(placeId);
   try {
@@ -88,14 +104,12 @@ const getCityCoordinates = async (placeId) => {
     );
 
     return response.data.result.geometry.location;
->>>>>>> main
   } catch (error) {
     console.error(error);
+    return error.message;
   }
 };
 
-<<<<<<< HEAD
-=======
 const getEstablishments = async (placeId, type) => {
   try {
     const { lat, lng } = await getCityCoordinates(placeId);
@@ -114,6 +128,18 @@ googleRoutes.get("/establishments", async (req, res, next) => {
   try {
     const nearbyPlaces = await getEstablishments(id, type);
     res.json(nearbyPlaces);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+googleRoutes.get("/suggestedEstablishments", async (req, res, next) => {
+  const { input } = req.query;
+
+  try {
+    const suggestedEstablishments = await getEstablishmentsSuggestions(input);
+    res.json(suggestedEstablishments);
   } catch (error) {
     console.error(error);
     next(error);
@@ -142,7 +168,6 @@ googleRoutes.get("/cityDetails", async (req, res, next) => {
   }
 });
 
->>>>>>> main
 googleRoutes.get("/cityInfo", async (req, res, next) => {
   const { city, state } = req.query;
 
