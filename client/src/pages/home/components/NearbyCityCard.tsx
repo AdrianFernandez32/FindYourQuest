@@ -1,19 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { ICity } from "../../../assets/interfaces/City";
 import defaultcity from "../../../assets/images/defaultcity.png";
+import { useNavigate } from "react-router";
 
 const NearbyCityCard = (props: { city: ICity }) => {
+  const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
+
+  const hoverIn = () => {
+    setHovered(true);
+  };
+
+  const hoverOut = () => {
+    setHovered(false);
+  };
+
+  const image = props.city.googlePlacesPhotoReference
+    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${props.city.googlePlacesPhotoReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+    : defaultcity;
+
+  const iframe = `https://maps.google.com/maps?q=${props.city.city},${props.city.state}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+
   return (
-    <div className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden">
-      {props.city.googlePlacesPhotoReference ? (
-        <img
-          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${props.city.googlePlacesPhotoReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
-          alt={props.city.city}
-          className="w-full h-2/3 object-cover"
+    <div
+      className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden cursor-pointer duration-200 hover:scale-105"
+      onClick={() => navigate(`/city/${props.city.googlePlaceId}`)}
+      onMouseEnter={hoverIn}
+      onMouseLeave={hoverOut}
+    >
+      {hovered ? (
+        <iframe
+          src={iframe}
+          style={{ width: "100%", height: "2/3" }}
+          title="City Map"
+          loading="lazy"
         />
       ) : (
         <img
-          src={defaultcity}
+          src={image}
           alt={props.city.city}
           className="w-full h-2/3 object-cover"
         />

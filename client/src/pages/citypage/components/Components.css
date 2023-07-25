@@ -1,0 +1,175 @@
+.spinnerContainer {
+  width: 100%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid gray;
+}
+
+@media screen and (min-width: 1024px) {
+  .spinnerContainer {
+    width: 66.667%;
+    height: 42%;
+  }
+}
+
+.spinnerLabel {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+@media screen and (min-width: 768px) {
+  .spinnerLabel {
+    font-size: 3rem;
+  }
+}
+
+.imageContainer {
+  width: 100%;
+  height: 25%;
+  overflow: hidden;
+  position: relative;
+}
+
+@media screen and (min-width: 1024px) {
+  .imageContainer {
+    width: 66.667%;
+    height: 42%;
+  }
+}
+
+.imageProps {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detailsDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+.placesIn {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+@media screen and (min-width: 1024px) {
+  .placesIn {
+    font-size: 1.875rem;
+  }
+}
+
+.cityName {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+@media screen and (min-width: 1024px) {
+  .cityName {
+    font-size: 2.5rem;
+  }
+}
+
+.rating-low {
+  background-color: #ef4444;
+}
+.rating-medium {
+  background-color: #f59e0b;
+}
+.rating-high {
+  background-color: #10b981;
+}
+
+.placeContainer {
+  width: 100%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  height: 13rem;
+  border-radius: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 200ms;
+  position: relative;
+}
+
+.placeContainer:hover {
+  transform: scale(1.05);
+}
+
+.placeImage {
+  width: 100%;
+  height: 66.667%;
+  object-fit: cover;
+}
+
+.detailsContainer {
+  width: 100%;
+  height: 33.3334%;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.placeName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeAddress {
+  font-size: 0.875rem;
+  color: #718096;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeRating {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  border-radius: 0.375rem;
+  color: #ffffff;
+  min-width: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.googleMapsLabel {
+  width: 100%;
+  height: 100%;
+  transition-duration: 150ms;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 1rem;
+  opacity: 0;
+  position: absolute;
+}
+
+.googleMapsLabel:hover {
+  opacity: 1;
+}

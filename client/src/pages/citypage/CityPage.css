@@ -1,0 +1,148 @@
+.cityPageContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tabList {
+  display: flex;
+  justify-content: start;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .tabList {
+    padding-left: 0;
+    padding-right: 0;
+    width: 66.667%;
+    justify-content: center;
+  }
+}
+
+.tabItem {
+  font-weight: 500;
+  font-size: 1rem;
+  padding-bottom: 0.25rem;
+  transition-duration: 200ms;
+  cursor: pointer;
+}
+
+.tabItem:hover {
+  scale: 105%;
+}
+
+.tabItemSelected {
+  border-bottom-width: 1px;
+  border-color: #55ab00;
+}
+
+@media (min-width: 640px) {
+  .tabItem {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .tabItem {
+    font-size: 1.25rem;
+  }
+}
+
+.nearbyPlacesContainer {
+  width: 100%;
+  height: 25%;
+}
+
+@media (min-width: 640px) {
+  .nearbyPlacesContainer {
+    width: 66.6667%;
+  }
+}
+
+.placesNearYou {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-bottom-width: 1px;
+  border-color: gray;
+}
+
+@media (min-width: 1024px) {
+  .placesNearYou {
+    font-size: 2.25rem;
+  }
+}
+
+.nearbyPlacesContainer2 {
+  width: 100%;
+  padding: 0.75rem;
+}
+
+.nearbyPlacesGrid {
+  display: grid;
+  width: 100%;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+  gap: 1rem;
+  padding: 0.75rem;
+  justify-items: center;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media screen and (min-width: 768px) {
+  .nearbyPlacesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .nearbyPlacesGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .nearbyPlacesGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.notFoundMessageDiv {
+  width: 100%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .notFoundMessageDiv {
+    width: 66.667%;
+  }
+}
+
+.notFoundMessage {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media screen and (min-width: 768px) {
+  .notFoundMessage {
+    font-size: 1.5rem;
+  }
+}
