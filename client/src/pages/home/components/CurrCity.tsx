@@ -111,5 +111,3 @@ const CurrCity = ({ getCoordinates }: any) => {
 };
 
 export default CurrCity;
-
-// API Key AIzaSyDftQGUsW_B4O4ewqCW4BGH-zV1loSwkMc

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 
 const NearbyCityCard = (props: { city: ICity }) => {
   const navigate = useNavigate();
-  console.log(props.city);
   return (
     <div
       className="w-full shadow-md h-52 rounded-lg flex flex-col justify-center items-center overflow-hidden cursor-pointer duration-200 hover:scale-105"
