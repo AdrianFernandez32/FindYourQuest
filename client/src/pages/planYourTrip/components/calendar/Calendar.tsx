@@ -18,6 +18,7 @@ interface DemoAppState {
   weekendsVisible: boolean;
   currentEvents: EventApi[];
   isModalOpen: boolean;
+  selectedInfo: DateSelectArg | null;
 }
 
 export default class Calendar extends React.Component<{}, DemoAppState> {
@@ -25,6 +26,7 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
     weekendsVisible: true,
     currentEvents: [],
     isModalOpen: false,
+    selectedInfo: null,
   };
 
   openModal = () => {
@@ -67,6 +69,7 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
           <EventDetails
             isOpen={this.state.isModalOpen}
             onClose={this.closeModal}
+            handleModalSubmit={this.handleModalSubmit}
           />
         </div>
       </div>
@@ -109,21 +112,32 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
   };
 
   handleDateSelect = (selectInfo: DateSelectArg) => {
+    this.setState({
+      selectedInfo: selectInfo,
+    });
     this.openModal();
-    let title = prompt("Please enter a new title for your event");
-    let calendarApi = selectInfo.view.calendar;
+  };
 
-    calendarApi.unselect(); // clear date selection
+  handleModalSubmit = (title: string) => {
+    if (this.state.selectedInfo) {
+      let calendarApi = this.state.selectedInfo.view.calendar;
+      calendarApi.unselect(); // clear date selection
 
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-      });
+      if (title) {
+        calendarApi.addEvent({
+          id: createEventId(),
+          title,
+          start: this.state.selectedInfo.startStr,
+          end: this.state.selectedInfo.endStr,
+          allDay: this.state.selectedInfo.allDay,
+        });
+      }
     }
+
+    this.setState({
+      selectedInfo: null,
+    });
+    this.closeModal();
   };
 
   handleEventClick = (clickInfo: EventClickArg) => {
