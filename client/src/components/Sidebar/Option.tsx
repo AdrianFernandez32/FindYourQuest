@@ -12,7 +12,7 @@ const Option = ({ name, icon, route }: Props) => {
   const navigate = useNavigate();
   return (
     <div
-      className="w-full flex justify-start items-center p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00]"
+      className="w-full flex justify-start items-center p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00] cursor-pointer"
       onClick={() => navigate(route)}
     >
       {icon}

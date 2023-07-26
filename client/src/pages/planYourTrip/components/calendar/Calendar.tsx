@@ -11,17 +11,28 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { INITIAL_EVENTS, createEventId } from "./event-utils";
+import EventDetails from "./EventDetails";
 import "./index.css";
 
 interface DemoAppState {
   weekendsVisible: boolean;
   currentEvents: EventApi[];
+  isModalOpen: boolean;
 }
 
 export default class Calendar extends React.Component<{}, DemoAppState> {
   state: DemoAppState = {
     weekendsVisible: true,
     currentEvents: [],
+    isModalOpen: false,
+  };
+
+  openModal = () => {
+    this.setState({ isModalOpen: true });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
   };
 
   render() {
@@ -52,6 +63,10 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
             eventChange={function(){}}
             eventRemove={function(){}}
             */
+          />
+          <EventDetails
+            isOpen={this.state.isModalOpen}
+            onClose={this.closeModal}
           />
         </div>
       </div>
@@ -94,6 +109,7 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
   };
 
   handleDateSelect = (selectInfo: DateSelectArg) => {
+    this.openModal();
     let title = prompt("Please enter a new title for your event");
     let calendarApi = selectInfo.view.calendar;
 

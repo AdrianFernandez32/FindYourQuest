@@ -79,7 +79,7 @@ const Sidebar = ({ open, toggleSidebar, user }: Props) => {
               </div>
             </div>
             <div className="w-11/12 border-t border-white" />
-            <div className="w-full flex justify-start items-center m-2 p-5 gap-2 duration-150 text-white  hover:bg-[#376e01]">
+            <div className="w-full flex justify-start items-center m-2 p-5 gap-2 duration-150 text-white  hover:bg-[#376e01] cursor-pointer">
               <FaUserAlt size="1.5em" color="white" />
               <h1 className="text-xl font-semibold">Profile</h1>
             </div>
@@ -103,7 +103,7 @@ const Sidebar = ({ open, toggleSidebar, user }: Props) => {
             ))}
           </div>
           <div
-            className="w-full flex justify-start items-center border-t border-gray-300 p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00]"
+            className="w-full flex justify-start items-center border-t border-gray-300 p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00] cursor-pointer"
             onClick={() => handleLogout()}
           >
             <FiLogOut size="2em" />
