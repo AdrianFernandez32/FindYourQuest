@@ -5,6 +5,7 @@ import axios from "axios";
 import PlaceCard from "./components/PlaceCard";
 import { RiEmotionSadLine } from "react-icons/ri";
 import "./CityPage.css";
+import Layout from "../../components/Layout";
 
 const CityPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,7 +71,7 @@ const CityPage = () => {
   }, [type]);
 
   return id ? (
-    <div className="cityPageContainer">
+    <Layout>
       <CityImage id={id} />
       <ul className="tabList">
         {types.map((item) => (
@@ -103,7 +104,7 @@ const CityPage = () => {
           </h1>
         </div>
       )}
-    </div>
+    </Layout>
   ) : null;
 };
 

@@ -34,95 +34,48 @@ const validationSchema = Yup.object({
   dLanding_airport: Yup.string().required("Required"),
 });
 
+const useGoogleSuggestions = (search: string) => {
+  const [suggestions, setSuggestions] = useState<
+    { place_id: string; description: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (search.length > 1) {
+      axios
+        .get(
+          `http://localhost:3001/google/suggestedEstablishments?input=${search}`
+        )
+        .then((res) => {
+          setSuggestions(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setSuggestions([]);
+    }
+  }, [search]);
+
+  return suggestions;
+};
+
 const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
   const [searchFinin, setSearchFinin] = useState("");
-  const [suggestionsFinin, setSuggestionsFinin] = useState<
-    { place_id: string; description: string }[]
-  >([]);
+  const suggestionsFinin = useGoogleSuggestions(searchFinin);
+
   const [searchFinout, setSearchFinout] = useState("");
-  const [suggestionsFinout, setSuggestionsFinout] = useState<
-    { place_id: string; description: string }[]
-  >([]);
+  const suggestionsFinout = useGoogleSuggestions(searchFinout);
+
   const [searchFoutin, setSearchFoutin] = useState("");
-  const [suggestionsFoutin, setSuggestionsFoutin] = useState<
-    { place_id: string; description: string }[]
-  >([]);
+  const suggestionsFoutin = useGoogleSuggestions(searchFoutin);
+
   const [searchFoutout, setSearchFoutout] = useState("");
-  const [suggestionsFoutout, setSuggestionsFoutout] = useState<
-    { place_id: string; description: string }[]
-  >([]);
+  const suggestionsFoutout = useGoogleSuggestions(searchFoutout);
+
   const [isFocusedFinin, setIsFocusedFinin] = useState(false);
   const [isFocusedFinout, setIsFocusedFinout] = useState(false);
   const [isFocusedFoutin, setIsFocusedFoutin] = useState(false);
   const [isFocusedFoutout, setIsFocusedFoutout] = useState(false);
-
-  useEffect(() => {
-    if (searchFinin.length > 1) {
-      axios
-        .get(
-          `http://localhost:3001/google/suggestedEstablishments?input=${searchFinin}`
-        )
-        .then((res) => {
-          setSuggestionsFinin(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      setSuggestionsFinin([]);
-    }
-  }, [searchFinin]);
-
-  useEffect(() => {
-    if (searchFinout.length > 1) {
-      axios
-        .get(
-          `http://localhost:3001/google/suggestedEstablishments?input=${searchFinout}`
-        )
-        .then((res) => {
-          setSuggestionsFinout(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      setSuggestionsFinout([]);
-    }
-  }, [searchFinout]);
-
-  useEffect(() => {
-    if (searchFoutin.length > 1) {
-      axios
-        .get(
-          `http://localhost:3001/google/suggestedEstablishments?input=${searchFoutin}`
-        )
-        .then((res) => {
-          setSuggestionsFoutin(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      setSuggestionsFoutin([]);
-    }
-  }, [searchFoutin]);
-
-  useEffect(() => {
-    if (searchFoutout.length > 1) {
-      axios
-        .get(
-          `http://localhost:3001/google/suggestedEstablishments?input=${searchFoutout}`
-        )
-        .then((res) => {
-          setSuggestionsFoutout(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      setSuggestionsFoutout([]);
-    }
-  }, [searchFoutout]);
 
   const setFlights = (values: any) => {
     setFlightIn({

@@ -114,21 +114,27 @@ export default class Calendar extends React.Component<
     return (
       <div className="demo-app-sidebar">
         <div className="demo-app-sidebar-section">
-          <h2>Instructions</h2>
+          <h2 className="font-bold text-2xl">Instructions</h2>
           <ul>
-            <li>Click dates and you will be prompted to create a new event</li>
-            <li>Drag, drop, and resize events</li>
-            <li>Click an event to see details or delete it</li>
+            <li className="font-medium">
+              Click dates and you will be prompted to create a new event
+            </li>
+            <li className="font-medium">Drag, drop, and resize events</li>
+            <li className="font-medium">
+              Click an event to see details or delete it
+            </li>
           </ul>
         </div>
         {this.state.currentEvents.length > 0 ? (
           <div className="demo-app-sidebar-section">
-            <h2>All Events ({this.state.currentEvents.length})</h2>
+            <h2 className="font-bold">
+              All Events ({this.state.currentEvents.length})
+            </h2>
             <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
           </div>
         ) : (
           <div className="demo-app-sidebar-section">
-            <h2>Your events will appear here</h2>
+            <h2 className="font-bold">Your events will appear here</h2>
           </div>
         )}
       </div>
