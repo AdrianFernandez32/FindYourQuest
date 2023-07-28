@@ -13,6 +13,7 @@ import {
 import { ITrip } from "../../../assets/interfaces/Trip";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { formattedDate } from "../../../assets/functions/FormatDate";
 
 interface TripFormProps {
   setTrip: React.Dispatch<React.SetStateAction<ITrip>>;
@@ -59,14 +60,15 @@ const TripForm: React.FC<TripFormProps> = ({ setTrip }) => {
       }}
     >
       {(formik) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           const values = formik.values as ITrip;
           formik.validateForm(values).then((errors) => {
             if (Object.keys(errors).length === 0) {
               setTrip({
                 ...values,
-                start_date: new Date(values.start_date),
-                end_date: new Date(values.end_date),
+                start_date: formattedDate(new Date(values.start_date)),
+                end_date: formattedDate(new Date(values.end_date)),
               });
             }
           });

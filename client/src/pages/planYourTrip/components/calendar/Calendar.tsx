@@ -11,7 +11,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { INITIAL_EVENTS, createEventId } from "./event-utils";
-import EventDetails from "./EventDetails";
+import EventForm from "./EventForm";
+import EventInfo from "./EventInfo";
 import "./index.css";
 
 interface DemoAppState {
@@ -19,14 +20,33 @@ interface DemoAppState {
   currentEvents: EventApi[];
   isModalOpen: boolean;
   selectedInfo: DateSelectArg | null;
+  isDetailsOpen: boolean;
+  currentEvent: EventApi | null;
 }
 
-export default class Calendar extends React.Component<{}, DemoAppState> {
+interface CalendarProps {
+  updateEvents: (newEvents: EventApi[]) => void;
+}
+
+export default class Calendar extends React.Component<
+  CalendarProps,
+  DemoAppState
+> {
   state: DemoAppState = {
     weekendsVisible: true,
     currentEvents: [],
     isModalOpen: false,
     selectedInfo: null,
+    isDetailsOpen: false,
+    currentEvent: null,
+  };
+
+  handleEvents = (events: EventApi[]) => {
+    this.setState({
+      currentEvents: events,
+    });
+
+    this.props.updateEvents(events);
   };
 
   openModal = () => {
@@ -37,9 +57,17 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
     this.setState({ isModalOpen: false });
   };
 
+  openDetails = () => {
+    this.setState({ isDetailsOpen: true });
+  };
+
+  closeDetails = () => {
+    this.setState({ isDetailsOpen: false });
+  };
+
   render() {
     return (
-      <div className="demo-app">
+      <div className="demo-app mt-4">
         {this.renderSidebar()}
         <div className="demo-app-main">
           <FullCalendar
@@ -66,10 +94,16 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
             eventRemove={function(){}}
             */
           />
-          <EventDetails
+          <EventForm
             isOpen={this.state.isModalOpen}
             onClose={this.closeModal}
             handleModalSubmit={this.handleModalSubmit}
+          />
+          <EventInfo
+            isOpen={this.state.isDetailsOpen}
+            onClose={this.closeDetails}
+            event={this.state.currentEvent}
+            handleDelete={this.handleDelete}
           />
         </div>
       </div>
@@ -82,28 +116,33 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
         <div className="demo-app-sidebar-section">
           <h2>Instructions</h2>
           <ul>
-            <li>Select dates and you will be prompted to create a new event</li>
+            <li>Click dates and you will be prompted to create a new event</li>
             <li>Drag, drop, and resize events</li>
-            <li>Click an event to delete it</li>
+            <li>Click an event to see details or delete it</li>
           </ul>
         </div>
-        <div className="demo-app-sidebar-section">
-          <label>
-            <input
-              type="checkbox"
-              checked={this.state.weekendsVisible}
-              onChange={this.handleWeekendsToggle}
-            ></input>
-            toggle weekends
-          </label>
-        </div>
-        <div className="demo-app-sidebar-section">
-          <h2>All Events ({this.state.currentEvents.length})</h2>
-          <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
-        </div>
+        {this.state.currentEvents.length > 0 ? (
+          <div className="demo-app-sidebar-section">
+            <h2>All Events ({this.state.currentEvents.length})</h2>
+            <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
+          </div>
+        ) : (
+          <div className="demo-app-sidebar-section">
+            <h2>Your events will appear here</h2>
+          </div>
+        )}
       </div>
     );
   }
+
+  handleDelete = (event: EventApi) => {
+    event.remove();
+
+    this.setState({
+      selectedInfo: null,
+    });
+    this.closeDetails();
+  };
 
   handleWeekendsToggle = () => {
     this.setState({
@@ -118,20 +157,19 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
     this.openModal();
   };
 
-  handleModalSubmit = (title: string) => {
+  handleModalSubmit = (title: string, place_id: string) => {
     if (this.state.selectedInfo) {
       let calendarApi = this.state.selectedInfo.view.calendar;
       calendarApi.unselect(); // clear date selection
 
-      if (title) {
-        calendarApi.addEvent({
-          id: createEventId(),
-          title,
-          start: this.state.selectedInfo.startStr,
-          end: this.state.selectedInfo.endStr,
-          allDay: this.state.selectedInfo.allDay,
-        });
-      }
+      calendarApi.addEvent({
+        id: createEventId(),
+        title,
+        place_id,
+        start: this.state.selectedInfo.startStr,
+        end: this.state.selectedInfo.endStr,
+        allDay: this.state.selectedInfo.allDay,
+      });
     }
 
     this.setState({
@@ -141,20 +179,8 @@ export default class Calendar extends React.Component<{}, DemoAppState> {
   };
 
   handleEventClick = (clickInfo: EventClickArg) => {
-    // eslint-disable-next-line no-restricted-globals
-    if (
-      confirm(
-        `Are you sure you want to delete the event '${clickInfo.event.title}'`
-      )
-    ) {
-      clickInfo.event.remove();
-    }
-  };
-
-  handleEvents = (events: EventApi[]) => {
-    this.setState({
-      currentEvents: events,
-    });
+    this.setState({ currentEvent: clickInfo.event });
+    this.openDetails();
   };
 }
 

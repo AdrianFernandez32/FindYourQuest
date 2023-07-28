@@ -1,12 +1,14 @@
-import { Request, Response } from "express";
+import { Request, Response, response } from "express";
 import { connect } from "../database.js";
 import { IHotel } from "../interfaces/hotel.interface.js";
+import { OkPacket } from "mysql2";
 
 export async function getHotels(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   const flight = await conn.query("SELECT * FROM Hotel");
   return res.json(flight[0]);
 }
@@ -17,12 +19,20 @@ export async function createHotel(
 ): Promise<Response> {
   try {
     const newHotel: IHotel = req.body;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
 
     const insertQuery = "INSERT INTO Hotel SET ?";
-    await conn.query(insertQuery, newHotel);
+    const [response] = await conn.query(insertQuery, newHotel);
+    const insertId = (response as OkPacket).insertId;
+
+    // Obtener el objeto recién insertado
+    const selectQuery = "SELECT * FROM Hotel WHERE id = ?";
+    const [hotel] = await conn.query(selectQuery, insertId);
+
     return res.json({
-      message: "Flight Created",
+      hotel: hotel[0],
+      message: "Hotel Created",
     });
   } catch (error) {
     console.error(error);
@@ -35,7 +45,8 @@ export async function createHotel(
 
 export async function getHotel(req: Request, res: Response): Promise<Response> {
   const id = req.params.postId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const hotel = await conn.query(`SELECT * FROM Hotel WHERE id=${id}`);
     return res.json(hotel[0]);
@@ -51,7 +62,8 @@ export async function getHotel(req: Request, res: Response): Promise<Response> {
 export async function updateHotel(req: Request, res: Response) {
   const id = req.params.postId;
   const updatedHotel: IHotel = req.body;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const user = await conn.query(
       `UPDATE Hotel SET checkin='${updatedHotel.checkin}', checkout='${updatedHotel.checkout}', place_id='${updatedHotel.place_id}' WHERE id = ${id}`
@@ -70,7 +82,8 @@ export async function updateHotel(req: Request, res: Response) {
 
 export async function deleteHotel(req: Request, res: Response) {
   const id = req.params.postId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const hotel = await conn.query(`DELETE FROM Hotel WHERE id=${id}`);
     return res.json({

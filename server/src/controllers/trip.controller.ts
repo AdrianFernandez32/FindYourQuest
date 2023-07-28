@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { connect } from "../database.js";
 import { ITrip } from "../interfaces/trip.interface.js";
+import { OkPacket } from "mysql2";
 
 export async function getTrips(req: Request, res: Response): Promise<Response> {
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   const trips = await conn.query("SELECT * FROM Trip");
   return res.json(trips[0]);
 }
@@ -13,12 +15,18 @@ export async function createTrip(
   res: Response
 ): Promise<Response> {
   try {
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     const newTrip: ITrip = req.body;
 
     const insertQuery = "INSERT INTO Trip SET ?";
-    await conn.query(insertQuery, newTrip);
+    const [response] = await conn.query(insertQuery, newTrip);
+    const insertId = (response as OkPacket).insertId;
+
+    const selectQuery = "SELECT * FROM Trip WHERE id = ?";
+    const [trip] = await conn.query(selectQuery, insertId);
     return res.json({
+      trip: trip[0],
       message: "Trip created",
     });
   } catch (error) {
@@ -32,7 +40,8 @@ export async function createTrip(
 
 export async function getTrip(req: Request, res: Response) {
   const id = req.params.postId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const trip = await conn.query(`SELECT * FROM Trip WHERE id = ${id}`);
     return res.json(trip[0]);
@@ -47,7 +56,8 @@ export async function getTrip(req: Request, res: Response) {
 
 export async function deleteTrip(req: Request, res: Response) {
   const id = req.params.postId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const trip = await conn.query(`DELETE FROM Trip WHERE id = ${id}`);
     return res.json({
@@ -65,7 +75,8 @@ export async function deleteTrip(req: Request, res: Response) {
 export async function updateTrip(req: Request, res: Response) {
   const id = req.params.postId;
   const updatedTrip: ITrip = req.body;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
 
   try {
     const user = await conn.query(

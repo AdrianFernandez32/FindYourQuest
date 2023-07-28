@@ -1,7 +1,7 @@
 export interface ITrip {
   id?: number;
-  start_date: Date;
-  end_date: Date;
+  start_date: Date | string;
+  end_date: Date | string;
   flight_in_id: number;
   flight_out_id: number;
   hotel_id: number;

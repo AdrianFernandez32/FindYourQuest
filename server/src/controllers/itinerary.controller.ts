@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { connect } from "../database.js";
 import { IItinerary } from "../interfaces/itinerary.interface.js";
+import { OkPacket } from "mysql2";
 
 export async function getItineraries(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   const itinerary = await conn.query("SELECT * FROM Itinerary");
   return res.json(itinerary[0]);
 }
@@ -17,11 +19,17 @@ export async function createItinerary(
 ): Promise<Response> {
   try {
     const newItinerary: IItinerary = req.body;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
 
     const insertQuery = "INSERT INTO Itinerary SET ?";
-    await conn.query(insertQuery, newItinerary);
+    const [response] = await conn.query(insertQuery, newItinerary);
+    const insertId = (response as OkPacket).insertId;
+
+    const selectQuery = "SELECT * FROM Itinerary WHERE id = ?";
+    const [itinerary] = await conn.query(selectQuery, insertId);
     return res.json({
+      itinerary: itinerary[0],
       message: "Itinerary created",
     });
   } catch (error) {

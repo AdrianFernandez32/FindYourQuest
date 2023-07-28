@@ -1,17 +1,22 @@
 import { connect } from "../database.js";
 export async function getFlights(req, res) {
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     const flights = await conn.query("SELECT * FROM Flight");
     return res.json(flights[0]);
 }
 export async function createFlight(req, res) {
     try {
         const newFlight = req.body;
-        const conn = await connect();
+        const pool = await connect();
+        const conn = await pool.getConnection();
         const insertQuery = "INSERT INTO Flight SET ?";
-        const response = await conn.query(insertQuery, newFlight);
+        const [response] = await conn.query(insertQuery, newFlight);
+        const insertId = response.insertId;
+        const selectQuery = "SELECT * FROM Flight WHERE id = ?";
+        const [flight] = await conn.query(selectQuery, insertId);
         return res.json({
-            response: response,
+            flight: flight[0],
             message: "Flight Created",
         });
     }
@@ -25,13 +30,15 @@ export async function createFlight(req, res) {
 }
 export async function getFlight(req, res) {
     const id = req.params.postId;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     const flight = await conn.query(`SELECT * FROM Flight WHERE id = ${id}`);
     return res.json(flight[0]);
 }
 export async function deleteFlight(req, res) {
     const id = req.params.postId;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     try {
         const flight = await conn.query(`DELETE FROM Flight WHERE id = ${id}`);
         return res.json({
@@ -49,7 +56,8 @@ export async function deleteFlight(req, res) {
 export async function updateFlight(req, res) {
     const id = req.params.postId;
     const updatedFlight = req.body;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     try {
         const user = await conn.query(`UPDATE Flight SET departure='${updatedFlight.departure}', landing='${updatedFlight.landing}', airline='${updatedFlight.airline}', departure_airport='${updatedFlight.departure_airport}', landing_airport='${updatedFlight.landing_airport}' WHERE id=${id}`);
         return res.json({

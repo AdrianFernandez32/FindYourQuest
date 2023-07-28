@@ -1,16 +1,22 @@
 import { connect } from "../database.js";
 export async function getItineraries(req, res) {
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     const itinerary = await conn.query("SELECT * FROM Itinerary");
     return res.json(itinerary[0]);
 }
 export async function createItinerary(req, res) {
     try {
         const newItinerary = req.body;
-        const conn = await connect();
+        const pool = await connect();
+        const conn = await pool.getConnection();
         const insertQuery = "INSERT INTO Itinerary SET ?";
-        await conn.query(insertQuery, newItinerary);
+        const [response] = await conn.query(insertQuery, newItinerary);
+        const insertId = response.insertId;
+        const selectQuery = "SELECT * FROM Itinerary WHERE id = ?";
+        const [itinerary] = await conn.query(selectQuery, insertId);
         return res.json({
+            itinerary: itinerary[0],
             message: "Itinerary created",
         });
     }

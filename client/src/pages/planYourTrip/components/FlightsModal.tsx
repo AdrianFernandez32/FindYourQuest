@@ -19,6 +19,7 @@ import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { BiSolidPlaneLand, BiSolidPlaneTakeOff } from "react-icons/bi";
 import * as Yup from "yup";
+import { formattedDate } from "../../../assets/functions/FormatDate";
 
 const validationSchema = Yup.object({
   aDeparture: Yup.date().required("Required"),
@@ -125,15 +126,15 @@ const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
 
   const setFlights = (values: any) => {
     setFlightIn({
-      departure: values.aDeparture,
-      landing: values.aLanding,
+      departure: formattedDate(new Date(values.aDeparture)),
+      landing: formattedDate(new Date(values.aArrival)),
       airline: values.aAirline,
       departure_airport: values.aDeparture_airport,
       landing_airport: values.aLanding_airport,
     });
     setFlightOut({
-      departure: values.dDeparture,
-      landing: values.dLanding,
+      departure: formattedDate(new Date(values.dDeparture)),
+      landing: formattedDate(new Date(values.dArrival)),
       airline: values.dAirline,
       departure_airport: values.dDeparture_airport,
       landing_airport: values.dLanding_airport,

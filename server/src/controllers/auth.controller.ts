@@ -7,7 +7,8 @@ import bcrypt from "bcrypt";
 export async function authentication(req: Request, res: Response) {
   try {
     const newLogin: ILogin = req.body;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
 
     const query = `SELECT id, password, email, first_name, last_name, trips FROM User WHERE email = ?`;
     const [users]: any[] = await conn.query(query, [newLogin.email]);

@@ -8,7 +8,8 @@ export async function getUsers(req, res) {
 export async function createUser(req, res) {
     try {
         const newUser = req.body;
-        const conn = await connect();
+        const pool = await connect();
+        const conn = await pool.getConnection();
         const salt = await bcrypt.genSalt(10);
         newUser.password = await bcrypt.hash(newUser.password, salt);
         const checkEmailQuery = "SELECT * FROM User WHERE email = ?";

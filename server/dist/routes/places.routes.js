@@ -39,6 +39,16 @@ const getCityInformation = async (placeId) => {
         return { error: error.message };
     }
 };
+const getPlaceInformation = async (placeId) => {
+    try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address&key=${process.env.GOOGLE_API_KEY}`);
+        return response.data;
+    }
+    catch (error) {
+        console.error(error);
+        return { error: error.message };
+    }
+};
 const getNearbyCities = async (latitude, longitude) => {
     try {
         const response = await axios.get(`http://api.geonames.org/findNearbyJSON?lat=${latitude}&lng=${longitude}&cities=cities1000&radius=50&maxRows=10&username=${process.env.GEONAMES_USERNAME}`);
@@ -74,6 +84,16 @@ const getSuggestions = async (text) => {
 const getEstablishmentsSuggestions = async (text) => {
     try {
         const response = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}&types=establishment&key=${process.env.GOOGLE_API_KEY}`);
+        return response.data.predictions;
+    }
+    catch (error) {
+        console.error(error);
+        return error.message;
+    }
+};
+const getPlacesSuggestions = async (text) => {
+    try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}&key=${process.env.GOOGLE_API_KEY}`);
         return response.data.predictions;
     }
     catch (error) {
@@ -124,11 +144,32 @@ googleRoutes.get("/suggestedEstablishments", async (req, res, next) => {
         next(error);
     }
 });
+googleRoutes.get("/suggestedPlaces", async (req, res, next) => {
+    const { input } = req.query;
+    try {
+        const suggestedPlaces = await getPlacesSuggestions(input);
+        res.json(suggestedPlaces);
+    }
+    catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
 googleRoutes.get("/cityImage", async (req, res, next) => {
     const { id } = req.query;
     try {
         const photoReference = await getPhotoReference(id);
         res.json({ photoReference });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+googleRoutes.get("/placeDetails", async (req, res, next) => {
+    const { id } = req.query;
+    try {
+        const placeInfo = await getPlaceInformation(id);
+        res.json(placeInfo);
     }
     catch (error) {
         next(error);

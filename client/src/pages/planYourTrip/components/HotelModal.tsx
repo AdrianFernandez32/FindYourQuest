@@ -17,6 +17,7 @@ import axios from "axios";
 import { Field, Formik, Form } from "formik";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
+import { formattedDate } from "../../../assets/functions/FormatDate";
 
 const validationSchema = Yup.object({
   checkin: Yup.date().required("Required"),
@@ -64,8 +65,8 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
             validationSchema={validationSchema}
             onSubmit={(values: any, actions: any) => {
               setHotel({
-                checkin: values.checkin,
-                checkout: values.checkout,
+                checkin: formattedDate(new Date(values.checkin)),
+                checkout: formattedDate(new Date(values.checkout)),
                 place_id: values.place_id,
               });
             }}

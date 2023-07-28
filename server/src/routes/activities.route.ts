@@ -2,7 +2,7 @@ import { Router } from "express";
 import verifyToken from "../middleware/auth.middleware.js";
 import {
   getActivity,
-  createActivity,
+  createActivities,
   getActivities,
   deleteActivity,
   updateActivity,
@@ -10,7 +10,7 @@ import {
 
 const router = Router();
 
-router.route("/").get(getActivities).post(createActivity);
+router.route("/").get(getActivities).post(createActivities);
 
 router
   .route("/:postId")
