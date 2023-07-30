@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home";
@@ -11,9 +11,56 @@ import Itineraries from "./pages/itineraries/Itineraries";
 import { useState } from "react";
 import { UserContext } from "./assets/context/usercontext";
 import { IUser } from "../src/assets/interfaces/User";
+import axios from "axios";
+
+interface IApiResponse {
+  user: IUser;
+}
+
+async function fetchUserFromToken(token: string | null): Promise<IUser | null> {
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await axios.get<IApiResponse>(
+      "http://localhost:3001/login/verifyUser",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data.user;
+  } catch (err) {
+    console.error(`Error al obtener los datos del usuario: ${err}`);
+    return null;
+  }
+}
 
 function App() {
   const [user, setUser] = useState<IUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("token");
+    const userData = await fetchUserFromToken(token);
+
+    if (userData) {
+      setUser(userData);
+    }
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
