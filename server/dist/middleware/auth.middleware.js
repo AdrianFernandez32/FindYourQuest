@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-const verifyToken = (req, res, next) => {
+const verifyTokenlogin = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -29,5 +29,5 @@ const verifyToken = (req, res, next) => {
         }
     }
 };
-export default verifyToken;
+export default verifyTokenlogin;
 //# sourceMappingURL=auth.middleware.js.map

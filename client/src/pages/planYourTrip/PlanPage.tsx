@@ -81,7 +81,7 @@ const PlanPage = () => {
                     trip_id,
                     active: true,
                     // hardcoded by now
-                    user_id: 4,
+                    user_id: 11,
                   })
                   .then((itineraryResponse) => {
                     const itinerary_id = itineraryResponse.data.itinerary.id;

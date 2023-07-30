@@ -53,6 +53,23 @@ export async function getItinerary(
   return res.json(itinerary[0]);
 }
 
+export async function getItineraryByUser(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const userId = req.params.userId;
+  const conn = await connect();
+  const itinerary = await conn.query(
+    `SELECT 
+      I.id as itinerary_id, I.trip_id, I.user_id, I.active,
+      T.id as trip_id, T.start_date, T.end_date, T.city_id
+   FROM Itinerary I 
+   LEFT JOIN Trip T ON I.trip_id = T.id 
+   WHERE I.user_id = ${userId}`
+  );
+  return res.json(itinerary[0]);
+}
+
 export async function deleteItinerary(req: Request, res: Response) {
   const id = req.params.postId;
   const conn = await connect();

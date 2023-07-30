@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -12,6 +12,7 @@ import axios from "axios";
 import { ILogin } from "../../../assets/interfaces/Login";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../../assets/context/usercontext";
 
 const validationSchema = Yup.object({
   email: Yup.string().required("The email is required").email("Invalid email"),
@@ -22,6 +23,36 @@ const LoginForm = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
+
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error(
+      "useContext(UserContext) is undefined, please verify the context provider"
+    );
+  }
+
+  const { setUser } = userContext;
+
+  const setUserContext = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/login/verifyUser",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.user) {
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleLogin = (values: ILogin, resetForm: () => void) => {
     if (values.email === "" || values.password === "") {
@@ -41,6 +72,7 @@ const LoginForm = () => {
           localStorage.setItem("token", token);
           navigate("/");
           resetForm();
+          setUserContext();
         })
         .catch((error) => {
           if (error.response.status === 401) {

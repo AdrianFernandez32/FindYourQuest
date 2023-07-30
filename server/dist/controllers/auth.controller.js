@@ -39,7 +39,7 @@ export async function authentication(req, res) {
         });
     }
 }
-export async function verifyToken(req, res) {
+export async function verifyToken(req, res, next) {
     try {
         const token = req.headers.authorization?.split(" ")[1];
         if (!token) {
@@ -49,15 +49,41 @@ export async function verifyToken(req, res) {
         }
         jwt.verify(token, "secretkey", (err, decoded) => {
             if (err) {
+                console.log(err);
                 return res.status(401).json({
                     message: "Unauthorized!",
                     error: err,
                 });
             }
-            return res.status(200).json({
-                message: "Token is valid",
-                user: decoded,
+            next();
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "An error occurred.",
+            error: error.message,
+        });
+    }
+}
+export async function verifyTokenLog(req, res, next) {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({
+                message: "No token provided.",
             });
+        }
+        jwt.verify(token, "secretkey", (err, decoded) => {
+            if (err) {
+                console.log(err);
+                return res.status(401).json({
+                    message: "Unauthorized!",
+                    error: err,
+                });
+            }
+            res.status(200).json({ message: "Token is valid", user: decoded });
+            next();
         });
     }
     catch (error) {

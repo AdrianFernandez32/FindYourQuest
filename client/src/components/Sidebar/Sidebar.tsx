@@ -9,11 +9,12 @@ import { FaUserAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ILoggedUser } from "../../assets/interfaces/LoggedUser";
 import { Spinner } from "@chakra-ui/react";
+import { UserContext } from "../../assets/context/usercontext";
+import { useContext } from "react";
 
 type Props = {
   open: boolean;
   toggleSidebar: Function;
-  user: ILoggedUser | null;
 };
 
 const options = [
@@ -34,12 +35,23 @@ const options = [
   },
 ];
 
-const Sidebar = ({ open, toggleSidebar, user }: Props) => {
+const Sidebar = ({ open, toggleSidebar }: Props) => {
   const navigate = useNavigate();
+
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error(
+      "useContext(UserContext) is undefined, please verify the context provider"
+    );
+  }
+
+  const { user, setUser } = userContext;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+    setUser(null);
   };
 
   return (

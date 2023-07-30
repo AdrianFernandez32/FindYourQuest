@@ -18,7 +18,7 @@ const VerifyRoute = ({ children }: any) => {
 
     try {
       const response = await axios.get(
-        "http://localhost:3001/login/verifyToken",
+        "http://localhost:3001/login/verifyUser",
         {
           headers: {
             Authorization: `Bearer ${token}`,

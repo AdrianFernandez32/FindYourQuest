@@ -7,7 +7,7 @@ interface TokenPayload {
   exp: number;
 }
 
-const verifyToken = (
+const verifyTokenlogin = (
   req: Request & { user?: string },
   res: Response,
   next: NextFunction
@@ -45,4 +45,4 @@ const verifyToken = (
   }
 };
 
-export default verifyToken;
+export default verifyTokenlogin;

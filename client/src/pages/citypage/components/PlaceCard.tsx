@@ -2,8 +2,6 @@ import defaultcity from "../../../assets/images/defaultcity.png";
 import "./Components.css";
 
 const PlaceCard = ({ place }: any) => {
-  console.log(place);
-
   const getRatingColor = (rating: number) => {
     if (rating < 3) {
       return "rating-low";
