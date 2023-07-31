@@ -1,16 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import ItineraryCard from "./components/ItineraryCard";
 import { Spinner } from "@chakra-ui/spinner";
+import { UserContext } from "../../assets/context/usercontext";
 
 const Itineraries = () => {
   const [itineraries, setItineraries] = useState<any>([]);
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error("Something went wrong");
+  }
+
+  const { user } = userContext;
+
   const fetchItineraries = async () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:3001/itineraries/user/11`,
+        `http://localhost:3001/itineraries/user/${user?.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

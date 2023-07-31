@@ -3,7 +3,7 @@ import PlanButton from "./components/PlanButton";
 import Layout from "../../components/Layout";
 import Calendar from "./components/calendar/Calendar";
 import { useDisclosure, Button, useToast } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ITrip, defaultTrip } from "../../assets/interfaces/Trip";
 import { IHotel, defaultHotel } from "../../assets/interfaces/Hotel";
 import TripForm from "./components/TripForm";
@@ -14,6 +14,7 @@ import { EventApi } from "@fullcalendar/core";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { formattedDate } from "../../assets/functions/FormatDate";
+import { UserContext } from "../../assets/context/usercontext";
 
 const options = [
   {
@@ -39,6 +40,16 @@ const PlanPage = () => {
   const navigate = useNavigate();
 
   const toast = useToast();
+
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error(
+      "useContext(UserContext) is undefined, please verify the context provider"
+    );
+  }
+
+  const { user } = userContext;
 
   const updateEvents = (newEvents: EventApi[] | any) => {
     setEvents(newEvents);
@@ -81,7 +92,7 @@ const PlanPage = () => {
                     trip_id,
                     active: true,
                     // hardcoded by now
-                    user_id: 11,
+                    user_id: user?.id,
                   })
                   .then((itineraryResponse) => {
                     const itinerary_id = itineraryResponse.data.itinerary.id;
