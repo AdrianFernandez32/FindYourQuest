@@ -104,14 +104,14 @@ const FlightModal = ({ isOpen, onClose, setFlightIn, setFlightOut }: any) => {
           <Formik
             initialValues={{
               // Arrival flight
-              aDeparture: new Date(),
-              aArrival: new Date(),
+              aDeparture: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
+              aArrival: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
               aAirline: "",
               aDeparture_airport: "",
               aLanding_airport: "",
               // Flight back home
-              dDeparture: new Date(),
-              dArrival: new Date(),
+              dDeparture: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
+              dArrival: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
               dAirline: "",
               dDeparture_airport: "",
               dLanding_airport: "",

@@ -47,8 +47,8 @@ const TripForm: React.FC<TripFormProps> = ({ setTrip }) => {
   return (
     <Formik
       initialValues={{
-        start_date: new Date(),
-        end_date: new Date(),
+        start_date: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
+        end_date: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
         city_id: "",
         flight_in_id: 0,
         flight_out_id: 0,

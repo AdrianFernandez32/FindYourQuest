@@ -67,7 +67,7 @@ export default class Calendar extends React.Component<
 
   render() {
     return (
-      <div className="demo-app mt-4">
+      <div className="demo-app">
         {this.renderSidebar()}
         <div className="demo-app-main">
           <FullCalendar
@@ -113,6 +113,10 @@ export default class Calendar extends React.Component<
   renderSidebar() {
     return (
       <div className="demo-app-sidebar">
+        <h2 className="text-md m-4">
+          In this section you can create your own itinerary or if you want to,
+          you can ask the app to do it by clicking in "Generate itinerary"
+        </h2>
         <div className="demo-app-sidebar-section">
           <h2 className="font-bold text-2xl">Instructions</h2>
           <ul>
@@ -125,6 +129,7 @@ export default class Calendar extends React.Component<
             </li>
           </ul>
         </div>
+        <div className=""></div>
         {this.state.currentEvents.length > 0 ? (
           <div className="demo-app-sidebar-section">
             <h2 className="font-bold">

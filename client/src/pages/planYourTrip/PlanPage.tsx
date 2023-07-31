@@ -55,6 +55,23 @@ const PlanPage = () => {
     setEvents(newEvents);
   };
 
+  const validateAutogenerate = () => {
+    if (
+      trip.start_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
+      trip.end_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
+      trip.city_id === ""
+    ) {
+      toast({
+        title: "Missing params",
+        description: "Please try again filling the form above",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    } else {
+    }
+  };
+
   const handleSubmit = () => {
     if (validateFields()) {
       Promise.all([
@@ -91,7 +108,6 @@ const PlanPage = () => {
                   .post(`http://localhost:3001/itineraries`, {
                     trip_id,
                     active: true,
-                    // hardcoded by now
                     user_id: user?.id,
                   })
                   .then((itineraryResponse) => {
@@ -121,7 +137,7 @@ const PlanPage = () => {
                     });
                     setTimeout(() => {
                       navigate("/");
-                    }, 4000);
+                    }, 1000);
                   })
                   .catch((error) => {
                     console.error("Error creating itinerary: ", error);
@@ -196,6 +212,9 @@ const PlanPage = () => {
           ))}
         </div>
       </div>
+      <button className="rounded-lg p-2 px-3 bg-[#55ab00] font-semibold text-white text-lg my-8">
+        Autogenerate itinerary
+      </button>
       <Calendar updateEvents={updateEvents} />
 
       <FlightModal

@@ -58,8 +58,8 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
         <ModalBody>
           <Formik
             initialValues={{
-              checkin: new Date(),
-              checkout: new Date(),
+              checkin: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
+              checkout: new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)),
               place_id: "",
             }}
             validationSchema={validationSchema}
