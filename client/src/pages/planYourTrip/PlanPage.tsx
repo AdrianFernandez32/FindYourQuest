@@ -59,11 +59,12 @@ const PlanPage = () => {
     if (
       trip.start_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
       trip.end_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
-      trip.city_id === ""
+      trip.city_id === "" ||
+      hotel.place_id === ""
     ) {
       toast({
         title: "Missing params",
-        description: "Please try again filling the form above",
+        description: "Please try again filling the form above and hotel",
         status: "error",
         duration: 4000,
         isClosable: true,
