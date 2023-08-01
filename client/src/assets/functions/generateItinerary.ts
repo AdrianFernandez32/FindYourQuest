@@ -1,5 +1,6 @@
 import { EventApi } from "@fullcalendar/core";
 import axios from "axios";
+import { createEventId } from "../../pages/planYourTrip/components/calendar/event-utils";
 
 const longActivities = new Set([
   "museum",
@@ -36,6 +37,7 @@ var visitedPlacesSet = new Set();
 
 const getPlaceToVisit = async (id: string, type: string) => {
   let isVisited = true;
+  let attemptedTypes = new Set();
   while (isVisited) {
     try {
       const response = await axios.get(
@@ -45,20 +47,24 @@ const getPlaceToVisit = async (id: string, type: string) => {
       for (const place of response.data) {
         if (!visitedPlacesSet.has(place.place_id)) {
           visitedPlacesSet.add(place.place_id);
-          return place;
+          return { palce_id: place.place_id, name: place.name };
         }
       }
       if (type === "restaurant") {
         if (response.data.length > 0) {
-          return response.data[
-            Math.floor(Math.random() * response.data.length)
-          ];
+          const place =
+            response.data[Math.floor(Math.random() * response.data.length)];
+          return { place_id: place.place_id, name: place.name };
         } else {
           return null;
         }
       } else {
         let typeIndex = Math.floor(Math.random() * activities.length);
         type = activities[typeIndex];
+        attemptedTypes.add(type);
+        if (attemptedTypes.size >= activities.length) {
+          return null;
+        }
       }
     } catch (error) {
       console.error(error);
@@ -82,10 +88,8 @@ const timeByActivity = (act: string) => {
   else return 2;
 };
 
-const getNextStop = (currentPoint: string) => {};
-
-export const generateItinerary = (
-  events: EventApi[],
+export const generateItinerary = async (
+  events: any[],
   startDate: string,
   endDate: string,
   startingPoint: string
@@ -100,11 +104,24 @@ export const generateItinerary = (
     if (!act) {
       currentPoint = startingPoint;
       currentDate.setHours(currentDate.getHours() + 1);
-    } else if (act === "resturants") {
-      currentDate.setMinutes(currentDate.getMinutes() + 90);
     } else {
-      const timeSpent = timeByActivity(act);
-      currentDate.setMinutes(currentDate.getMinutes() + timeSpent);
+      const place_obj = await getPlaceToVisit(currentPoint, act);
+      if (place_obj) {
+        events.push({
+          id: createEventId(),
+          place_id: place_obj.place_id,
+          title: place_obj.name,
+          start: currentDate,
+          end: currentDate.setHours(
+            currentDate.getHours() + timeByActivity(act)
+          ),
+        });
+        const timeSpent = act === "restaurants" ? 90 : timeByActivity(act) * 60;
+        currentDate.setMinutes(currentDate.getMinutes() + timeSpent);
+      } else {
+        currentDate.setHours(currentDate.getHours() + 1);
+      }
     }
   }
+  return events;
 };

@@ -67,7 +67,7 @@ export default class Calendar extends React.Component<
 
   render() {
     return (
-      <div className="demo-app">
+      <div className="demo-app mt-4">
         {this.renderSidebar()}
         <div className="demo-app-main">
           <FullCalendar
