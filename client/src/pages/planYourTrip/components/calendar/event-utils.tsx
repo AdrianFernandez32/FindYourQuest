@@ -9,6 +9,9 @@ export const INITIAL_EVENTS: EventInput[] = [
     title: "All-day event",
     start: todayStr,
     end: todayStr,
+    extendedProps: {
+      place_id: "1",
+    },
   },
   {
     id: createEventId(),

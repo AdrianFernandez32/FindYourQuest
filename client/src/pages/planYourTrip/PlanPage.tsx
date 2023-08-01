@@ -15,6 +15,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import { formattedDate } from "../../assets/functions/FormatDate";
 import { UserContext } from "../../assets/context/usercontext";
+import { generateItinerary } from "../../assets/functions/generateItinerary";
 
 const options = [
   {
@@ -55,23 +56,39 @@ const PlanPage = () => {
     setEvents(newEvents);
   };
 
-  const validateAutogenerate = () => {
-    if (
-      trip.start_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
-      trip.end_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
-      trip.city_id === "" ||
-      hotel.place_id === ""
-    ) {
-      toast({
-        title: "Missing params",
-        description: "Please try again filling the form above and hotel",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
-    } else {
-    }
-  };
+  // const validateAutogenerate = () => {
+  //   if (
+  //     trip.start_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
+  //     trip.end_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
+  //     trip.city_id === "" ||
+  //     hotel.place_id === ""
+  //   ) {
+  //     toast({
+  //       title: "Missing params",
+  //       description: "Please try again filling the form above and hotel",
+  //       status: "error",
+  //       duration: 4000,
+  //       isClosable: true,
+  //     });
+  //   } else {
+  //     handleGenerateItinerary();
+  //   }
+  // };
+
+  // const handleGenerateItinerary = async () => {
+  //   try {
+  //     const startingPoint = hotel.place_id;
+  //     const generatedEvents = await generateItinerary(
+  //       events,
+  //       trip.start_date,
+  //       trip.end_date,
+  //       startingPoint
+  //     );
+  //     setEvents(generatedEvents);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleSubmit = () => {
     if (validateFields()) {
@@ -92,10 +109,6 @@ const PlanPage = () => {
           const flightInResponse = responses[0];
           const flightOutResponse = responses[1];
           const hotelResponse = responses[2];
-
-          console.log("flightInResponse:", flightInResponse?.data);
-          console.log("flightOutResponse:", flightOutResponse?.data);
-          console.log("hotelResponse:", hotelResponse?.data);
 
           if (flightInResponse && flightOutResponse && hotelResponse) {
             trip.hotel_id = hotelResponse.data.hotel.id;
@@ -122,7 +135,6 @@ const PlanPage = () => {
                       itinerary_id: itinerary_id,
                     }));
 
-                    console.log(activities);
                     return axios.post(
                       `http://localhost:3001/activities`,
                       activities
@@ -213,18 +225,19 @@ const PlanPage = () => {
           ))}
         </div>
       </div>
-      <button className="rounded-lg p-2 px-3 bg-[#55ab00] font-semibold text-white text-lg my-8">
-        Autogenerate itinerary
-      </button>
-      <Calendar updateEvents={updateEvents} />
 
+      <Calendar
+        updateEvents={updateEvents}
+        start_date={trip.start_date}
+        end_date={trip.end_date}
+        startingPoint={hotel.place_id}
+      />
       <FlightModal
         isOpen={flightModal.isOpen}
         onClose={flightModal.onClose}
         setFlightIn={setFlightIn}
         setFlightOut={setFlightOut}
       />
-
       <HotelModal
         isOpen={hotelModal.isOpen}
         onClose={hotelModal.onClose}

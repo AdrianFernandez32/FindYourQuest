@@ -1,6 +1,6 @@
-import { EventApi } from "@fullcalendar/core";
 import axios from "axios";
 import { createEventId } from "../../pages/planYourTrip/components/calendar/event-utils";
+import { formattedDateCalendar } from "./FormatDate";
 
 const longActivities = new Set([
   "museum",
@@ -47,7 +47,7 @@ const getPlaceToVisit = async (id: string, type: string) => {
       for (const place of response.data) {
         if (!visitedPlacesSet.has(place.place_id)) {
           visitedPlacesSet.add(place.place_id);
-          return { palce_id: place.place_id, name: place.name };
+          return { place_id: place.place_id, name: place.name };
         }
       }
       if (type === "restaurant") {
@@ -83,18 +83,18 @@ const activityByHour = (hour: number) => {
 };
 
 const timeByActivity = (act: string) => {
-  if (act in longActivities) return 4;
-  else if (act in midActivities) return 3;
+  if (longActivities.has(act)) return 4;
+  else if (midActivities.has(act)) return 3;
   else return 2;
 };
 
 export const generateItinerary = async (
   events: any[],
-  startDate: string,
-  endDate: string,
+  startDate: string | Date,
+  endDate: string | Date,
   startingPoint: string
 ) => {
-  const currentDate = new Date(startDate);
+  let currentDate = new Date(startDate);
   const end_date = new Date(endDate);
   let currentPoint = startingPoint;
 
@@ -103,21 +103,44 @@ export const generateItinerary = async (
     const act = activityByHour(currHour);
     if (!act) {
       currentPoint = startingPoint;
+      console.log("nada");
       currentDate.setHours(currentDate.getHours() + 1);
     } else {
+      console.log(
+        act,
+        currentDate,
+        new Date(
+          new Date(currentDate).setHours(
+            currentDate.getHours() + timeByActivity(act)
+          )
+        )
+      );
+
       const place_obj = await getPlaceToVisit(currentPoint, act);
+      console.log(timeByActivity(act));
       if (place_obj) {
+        const startTime = new Date(currentDate);
+        const endTime = new Date(
+          new Date(currentDate).setHours(
+            currentDate.getHours() + timeByActivity(act)
+          )
+        );
+
         events.push({
           id: createEventId(),
           place_id: place_obj.place_id,
           title: place_obj.name,
-          start: currentDate,
-          end: currentDate.setHours(
-            currentDate.getHours() + timeByActivity(act)
-          ),
+          start: formattedDateCalendar(startTime),
+          end: formattedDateCalendar(endTime),
         });
-        const timeSpent = act === "restaurants" ? 90 : timeByActivity(act) * 60;
-        currentDate.setMinutes(currentDate.getMinutes() + timeSpent);
+
+        const timeSpent =
+          act === "restaurants" ? 120 : timeByActivity(act) * 60;
+
+        currentDate = new Date(
+          currentDate.setMinutes(currentDate.getMinutes() + timeSpent)
+        );
+        currentPoint = place_obj.place_id;
       } else {
         currentDate.setHours(currentDate.getHours() + 1);
       }

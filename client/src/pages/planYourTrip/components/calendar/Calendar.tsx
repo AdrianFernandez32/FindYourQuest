@@ -14,6 +14,7 @@ import { INITIAL_EVENTS, createEventId } from "./event-utils";
 import EventForm from "./EventForm";
 import EventInfo from "./EventInfo";
 import "./index.css";
+import { generateItinerary } from "../../../../assets/functions/generateItinerary";
 
 interface DemoAppState {
   weekendsVisible: boolean;
@@ -26,6 +27,9 @@ interface DemoAppState {
 
 interface CalendarProps {
   updateEvents: (newEvents: EventApi[]) => void;
+  start_date: Date | string;
+  end_date: Date | string;
+  startingPoint: string;
 }
 
 export default class Calendar extends React.Component<
@@ -41,7 +45,10 @@ export default class Calendar extends React.Component<
     currentEvent: null,
   };
 
+  calendarComponentRef = React.createRef<any>();
+
   handleEvents = (events: EventApi[]) => {
+    console.log("hanldeEvents");
     this.setState({
       currentEvents: events,
     });
@@ -70,7 +77,14 @@ export default class Calendar extends React.Component<
       <div className="demo-app mt-4">
         {this.renderSidebar()}
         <div className="demo-app-main">
+          <button
+            className="rounded-lg p-2 px-3 bg-[#55ab00] font-semibold text-white text-lg my-8"
+            onClick={() => this.handleAutogenerate()}
+          >
+            Autogenerate itinerary
+          </button>
           <FullCalendar
+            ref={this.calendarComponentRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
               left: "prev,next today",
@@ -83,7 +97,8 @@ export default class Calendar extends React.Component<
             selectMirror={true}
             dayMaxEvents={true}
             weekends={this.state.weekendsVisible}
-            initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
+            // events={eventInputArray}
+            // initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
             select={this.handleDateSelect}
             eventContent={renderEventContent} // custom render function
             eventClick={this.handleEventClick}
@@ -145,6 +160,29 @@ export default class Calendar extends React.Component<
       </div>
     );
   }
+
+  handleAutogenerate = async () => {
+    const places = await generateItinerary(
+      [],
+      this.props.start_date,
+      this.props.end_date,
+      this.props.startingPoint
+    );
+
+    let calendarApi = this.calendarComponentRef.current.getApi();
+
+    places.forEach((place) => {
+      if (place.start && place.end) {
+        calendarApi.addEvent({
+          id: createEventId(),
+          title: place.title,
+          start: place.start,
+          end: place.end,
+          place_id: place.place_id,
+        });
+      }
+    });
+  };
 
   handleDelete = (event: EventApi) => {
     event.remove();
