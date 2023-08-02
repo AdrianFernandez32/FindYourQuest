@@ -2,6 +2,7 @@ import axios from "axios";
 import { constant } from "lodash";
 import { useEffect, useState } from "react";
 import { Spinner } from "@chakra-ui/spinner";
+import { useNavigate } from "react-router";
 
 interface Props {
   start_date: string;
@@ -20,6 +21,7 @@ const ItineraryCard = ({
 }: Props) => {
   const [image, setImage] = useState("");
   const [placeInfo, setPlace] = useState<any>(null);
+  const navigate = useNavigate();
 
   const startTemp = new Date(start_date);
   const start_formatted = `${startTemp.getDate()}/${
@@ -50,6 +52,10 @@ const ItineraryCard = ({
     fetchPlaceinfo();
   }, []);
 
+  const handleClick = () => {
+    navigate(`/itinerary/${itinerary_id}`);
+  };
+
   if (!placeInfo) {
     return (
       <div className="w-2/3 h-80 rounded-lg shadow cursor-pointer hover:scale-105 flex flex-col items-center overflow-hidden justify-center">
@@ -60,7 +66,10 @@ const ItineraryCard = ({
   }
 
   return (
-    <div className="w-full lg:w-2/3 h-[400px] rounded-lg shadow cursor-pointer hover:scale-105 flex flex-col duration-200 items-center overflow-hidden relative">
+    <div
+      className="w-full lg:w-2/3 h-[400px] rounded-lg shadow cursor-pointer hover:scale-105 flex flex-col duration-200 items-center overflow-hidden relative"
+      onClick={() => handleClick()}
+    >
       <img
         src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${image}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
         alt="City Image"

@@ -39,6 +39,7 @@ interface CalendarProps {
   end_date: Date | string;
   startingPoint: string;
   validateAutogenerate: () => boolean;
+  type: "create" | "view";
 }
 
 export default class Calendar extends React.Component<

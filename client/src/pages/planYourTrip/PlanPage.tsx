@@ -218,6 +218,7 @@ const PlanPage = () => {
         end_date={trip.end_date}
         startingPoint={hotel.place_id}
         validateAutogenerate={validateAutogenerate}
+        type="create"
       />
       <FlightModal
         isOpen={flightModal.isOpen}

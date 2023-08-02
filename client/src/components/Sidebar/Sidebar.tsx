@@ -11,6 +11,7 @@ import { ILoggedUser } from "../../assets/interfaces/LoggedUser";
 import { Spinner } from "@chakra-ui/react";
 import { UserContext } from "../../assets/context/usercontext";
 import { useContext } from "react";
+import { FaPlaneCircleCheck } from "react-icons/fa6";
 
 type Props = {
   open: boolean;
@@ -32,6 +33,11 @@ const options = [
     name: "Plan my trip",
     icon: <BiSolidPlaneAlt size="2em" />,
     route: "/planmytrip",
+  },
+  {
+    name: "See my itineraries",
+    icon: <FaPlaneCircleCheck size="2em" />,
+    route: "/itineraries",
   },
 ];
 

@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import defaultcity from "../../../assets/images/defaultcity.png";
 import "./Components.css";
 
-const CityImage = ({ id }: { id: string }) => {
+const CityImage = ({
+  id,
+  type,
+}: {
+  id: string;
+  type: "city" | "itinerary";
+}) => {
   const [photoReference, setphotoReference] = useState(null);
   const [city, setCity] = useState<any>(null);
 
@@ -55,7 +61,9 @@ const CityImage = ({ id }: { id: string }) => {
       <div className="imageContainer">
         <img className="imageProps" src={defaultcity} alt="Place Photo" />
         <div className="detailsDiv">
-          <p className="placesIn">Places in</p>
+          <p className="placesIn">
+            {type === "city" ? "Places in" : "See your trip in"}
+          </p>
           <p className="cityName">{city.result.name}</p>
         </div>
       </div>
@@ -70,7 +78,9 @@ const CityImage = ({ id }: { id: string }) => {
         alt="Place Photo"
       />
       <div className="detailsDiv">
-        <p className="placesIn">Places in</p>
+        <p className="placesIn">
+          {type === "city" ? "Places in" : "See your trip in"}
+        </p>
         <p className="cityName">{city.result.name}</p>
       </div>
     </div>

@@ -72,7 +72,7 @@ const CityPage = () => {
 
   return id ? (
     <Layout>
-      <CityImage id={id} />
+      <CityImage id={id} type="city" />
       <ul className="tabList">
         {types.map((item) => (
           <li

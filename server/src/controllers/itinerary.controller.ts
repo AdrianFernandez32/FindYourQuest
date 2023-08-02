@@ -46,7 +46,8 @@ export async function getItinerary(
   res: Response
 ): Promise<Response> {
   const id = req.params.postId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   const itinerary = await conn.query(
     `SELECT * FROM Itinerary WHERE id = ${id}`
   );
@@ -58,7 +59,8 @@ export async function getItineraryByUser(
   res: Response
 ): Promise<Response> {
   const userId = req.params.userId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   const itinerary = await conn.query(
     `SELECT 
       I.id as itinerary_id, I.trip_id, I.user_id, I.active,
@@ -72,7 +74,8 @@ export async function getItineraryByUser(
 
 export async function deleteItinerary(req: Request, res: Response) {
   const id = req.params.postId;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const itinerary = await conn.query(
       `DELETE FROM Itinerary WHERE id = ${id}`
@@ -92,7 +95,8 @@ export async function deleteItinerary(req: Request, res: Response) {
 export async function updateItinerary(req: Request, res: Response) {
   const id = req.params.postId;
   const updatedItinerary: IItinerary = req.body;
-  const conn = await connect();
+  const pool = await connect();
+  const conn = await pool.getConnection();
   try {
     const itinerary = await conn.query(
       `UPDATE Itinerary SET active=${updatedItinerary.active} WHERE id=${id}`
@@ -106,5 +110,55 @@ export async function updateItinerary(req: Request, res: Response) {
       message: "Error deleting flight",
       error: error.message,
     });
+  }
+}
+
+export async function getWholeItinerary(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const { itinerary_id } = req.params;
+  const pool = await connect();
+  const conn = await pool.getConnection();
+
+  try {
+    const [itinerary]: any = await conn.query(
+      "SELECT * FROM Itinerary WHERE id = ?",
+      [itinerary_id]
+    );
+
+    if (itinerary.length === 0) {
+      return res.status(404).json({
+        message: `Itinerary with id ${itinerary_id} not found`,
+      });
+    }
+
+    const [trip] = await conn.query("SELECT * FROM Trip WHERE id = ?", [
+      itinerary[0].trip_id,
+    ]);
+
+    const [hotel] = await conn.query("SELECT * FROM Hotel WHERE id = ?", [
+      trip[0].hotel_id,
+    ]);
+
+    const [activities] = await conn.query(
+      "SELECT * FROM Activity WHERE itinerary_id = ?",
+      [itinerary_id]
+    );
+
+    return res.json({
+      itinerary: itinerary[0],
+      trip: trip[0],
+      hotel: hotel[0],
+      activities,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "An error occurred while fetching the itinerary details.",
+      error: error.message,
+    });
+  } finally {
+    conn.release();
   }
 }
