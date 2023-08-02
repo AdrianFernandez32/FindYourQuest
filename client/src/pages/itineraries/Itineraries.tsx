@@ -51,18 +51,20 @@ const Itineraries = () => {
       <h1 className="text-2xl lg:text-4xl font-semibold m-4">
         Check out your itineraries
       </h1>
-      {itineraries.map((itinerary: any) => {
-        return (
-          <ItineraryCard
-            key={itinerary.itinerary_id}
-            start_date={itinerary.start_date}
-            end_date={itinerary.end_date}
-            active={itinerary.active}
-            place_id={itinerary.city_id}
-            itinerary_id={itinerary.itinerary_id}
-          />
-        );
-      })}
+      <div className="flex flex-col w-full justify-center items-center gap-y-6">
+        {itineraries.map((itinerary: any) => {
+          return (
+            <ItineraryCard
+              key={itinerary.itinerary_id}
+              start_date={itinerary.start_date}
+              end_date={itinerary.end_date}
+              active={itinerary.active}
+              place_id={itinerary.city_id}
+              itinerary_id={itinerary.itinerary_id}
+            />
+          );
+        })}
+      </div>
     </Layout>
   );
 };

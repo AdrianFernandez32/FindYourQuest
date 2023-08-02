@@ -12,6 +12,7 @@ import { useState } from "react";
 import { UserContext } from "./assets/context/usercontext";
 import { IUser } from "../src/assets/interfaces/User";
 import axios from "axios";
+import ItineraryPage from "./pages/itineraries/ItineraryPage";
 
 interface IApiResponse {
   user: IUser;
@@ -87,6 +88,14 @@ function App() {
             element={
               <VerifyRoute>
                 <Itineraries />
+              </VerifyRoute>
+            }
+          />
+          <Route
+            path="/itinerary/:id"
+            element={
+              <VerifyRoute>
+                <ItineraryPage />
               </VerifyRoute>
             }
           />

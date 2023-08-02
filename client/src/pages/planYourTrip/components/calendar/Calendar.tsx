@@ -15,6 +15,13 @@ import EventForm from "./EventForm";
 import EventInfo from "./EventInfo";
 import "./index.css";
 import { generateItinerary } from "../../../../assets/functions/generateItinerary";
+import {
+  Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  Center,
+} from "@chakra-ui/react";
 
 interface DemoAppState {
   weekendsVisible: boolean;
@@ -23,6 +30,7 @@ interface DemoAppState {
   selectedInfo: DateSelectArg | null;
   isDetailsOpen: boolean;
   currentEvent: EventApi | null;
+  isLoading: boolean;
 }
 
 interface CalendarProps {
@@ -30,6 +38,7 @@ interface CalendarProps {
   start_date: Date | string;
   end_date: Date | string;
   startingPoint: string;
+  validateAutogenerate: () => boolean;
 }
 
 export default class Calendar extends React.Component<
@@ -43,12 +52,12 @@ export default class Calendar extends React.Component<
     selectedInfo: null,
     isDetailsOpen: false,
     currentEvent: null,
+    isLoading: false,
   };
 
   calendarComponentRef = React.createRef<any>();
 
   handleEvents = (events: EventApi[]) => {
-    console.log("hanldeEvents");
     this.setState({
       currentEvents: events,
     });
@@ -78,7 +87,7 @@ export default class Calendar extends React.Component<
         {this.renderSidebar()}
         <div className="demo-app-main">
           <button
-            className="rounded-lg p-2 px-3 bg-[#55ab00] font-semibold text-white text-lg my-8"
+            className="rounded-lg p-2 px-3 bg-[#55ab00] font-semibold text-white text-lg my-8 border border-[#55ab00] duration-200 cursor-pointer hover:bg-white hover:text-[#55ab00]"
             onClick={() => this.handleAutogenerate()}
           >
             Autogenerate itinerary
@@ -120,6 +129,20 @@ export default class Calendar extends React.Component<
             event={this.state.currentEvent}
             handleDelete={this.handleDelete}
           />
+          <Modal isOpen={this.state.isLoading} onClose={() => {}}>
+            <ModalOverlay />
+            <ModalContent>
+              <Center height="200px" display="flex" flexDir="column">
+                <Spinner size="xl" />
+                <h1 className="text-xl lg:text-2xl font-semibold">
+                  Generating the itinerary...
+                </h1>
+                <h4 className="text-sm lg:text-md font-medium text-gray-600">
+                  This may take a while, hold up
+                </h4>
+              </Center>
+            </ModalContent>
+          </Modal>
         </div>
       </div>
     );
@@ -150,7 +173,9 @@ export default class Calendar extends React.Component<
             <h2 className="font-bold">
               All Events ({this.state.currentEvents.length})
             </h2>
-            <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
+            <ul className="overflow-y-auto max-h-[400px]">
+              {this.state.currentEvents.map(renderSidebarEvent)}
+            </ul>
           </div>
         ) : (
           <div className="demo-app-sidebar-section">
@@ -162,26 +187,30 @@ export default class Calendar extends React.Component<
   }
 
   handleAutogenerate = async () => {
-    const places = await generateItinerary(
-      [],
-      this.props.start_date,
-      this.props.end_date,
-      this.props.startingPoint
-    );
+    if (this.props.validateAutogenerate()) {
+      this.setState({ isLoading: true });
+      const places = await generateItinerary(
+        [],
+        this.props.start_date,
+        this.props.end_date,
+        this.props.startingPoint
+      );
 
-    let calendarApi = this.calendarComponentRef.current.getApi();
+      let calendarApi = this.calendarComponentRef.current.getApi();
 
-    places.forEach((place) => {
-      if (place.start && place.end) {
-        calendarApi.addEvent({
-          id: createEventId(),
-          title: place.title,
-          start: place.start,
-          end: place.end,
-          place_id: place.place_id,
-        });
-      }
-    });
+      places.forEach((place) => {
+        if (place.start && place.end) {
+          calendarApi.addEvent({
+            id: createEventId(),
+            title: place.title,
+            start: place.start,
+            end: place.end,
+            place_id: place.place_id,
+          });
+        }
+      });
+      this.setState({ isLoading: false });
+    }
   };
 
   handleDelete = (event: EventApi) => {

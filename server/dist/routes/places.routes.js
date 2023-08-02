@@ -112,11 +112,12 @@ const getCityCoordinates = async (placeId) => {
         return error.message;
     }
 };
-const getEstablishments = async (placeId, type) => {
+const getEstablishments = async (placeId, type, radius) => {
     try {
         const { lat, lng } = await getCityCoordinates(placeId);
-        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=3000&type=${type}&key=${process.env.GOOGLE_API_KEY}`);
-        return response.data.results;
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=${type}&key=${process.env.GOOGLE_API_KEY}`);
+        const sortedResults = response.data.results.sort((a, b) => b.rating - a.rating);
+        return sortedResults;
     }
     catch (error) {
         console.error(error);
@@ -125,7 +126,18 @@ const getEstablishments = async (placeId, type) => {
 googleRoutes.get("/establishments", async (req, res, next) => {
     const { id, type } = req.query;
     try {
-        const nearbyPlaces = await getEstablishments(id, type);
+        const nearbyPlaces = await getEstablishments(id, type, 3000);
+        res.json(nearbyPlaces);
+    }
+    catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+googleRoutes.get("/palcestovisit", async (req, res, next) => {
+    const { id, type } = req.query;
+    try {
+        const nearbyPlaces = await getEstablishments(id, type, 1500);
         res.json(nearbyPlaces);
     }
     catch (error) {

@@ -21,6 +21,7 @@ interface TripFormProps {
 
 const validationSchema = Yup.object({
   start_date: Yup.date().required("Required"),
+  end_date: Yup.date().required("Required"),
   city_id: Yup.string().required("Required"),
 });
 

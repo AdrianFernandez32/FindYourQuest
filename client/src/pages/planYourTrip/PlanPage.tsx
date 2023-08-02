@@ -56,39 +56,25 @@ const PlanPage = () => {
     setEvents(newEvents);
   };
 
-  // const validateAutogenerate = () => {
-  //   if (
-  //     trip.start_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
-  //     trip.end_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
-  //     trip.city_id === "" ||
-  //     hotel.place_id === ""
-  //   ) {
-  //     toast({
-  //       title: "Missing params",
-  //       description: "Please try again filling the form above and hotel",
-  //       status: "error",
-  //       duration: 4000,
-  //       isClosable: true,
-  //     });
-  //   } else {
-  //     handleGenerateItinerary();
-  //   }
-  // };
-
-  // const handleGenerateItinerary = async () => {
-  //   try {
-  //     const startingPoint = hotel.place_id;
-  //     const generatedEvents = await generateItinerary(
-  //       events,
-  //       trip.start_date,
-  //       trip.end_date,
-  //       startingPoint
-  //     );
-  //     setEvents(generatedEvents);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const validateAutogenerate = () => {
+    if (
+      trip.start_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
+      trip.end_date === new Date(Date.UTC(1, 0, 1, 0, 0, 0, 0)) ||
+      trip.city_id === "" ||
+      hotel.place_id === ""
+    ) {
+      toast({
+        title: "Missing params",
+        description: "Please try again filling the form above and hotel",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const handleSubmit = () => {
     if (validateFields()) {
@@ -142,8 +128,8 @@ const PlanPage = () => {
                   })
                   .then((res) => {
                     toast({
-                      title: "Operación exitosa.",
-                      description: "Se ha creado el itinerario completo!",
+                      title: "Successful operation",
+                      description: "Everything was done.",
                       status: "success",
                       duration: 4000,
                       isClosable: true,
@@ -231,6 +217,7 @@ const PlanPage = () => {
         start_date={trip.start_date}
         end_date={trip.end_date}
         startingPoint={hotel.place_id}
+        validateAutogenerate={validateAutogenerate}
       />
       <FlightModal
         isOpen={flightModal.isOpen}
@@ -244,7 +231,7 @@ const PlanPage = () => {
         setHotel={setHotel}
       />
       <Button
-        className="m-5 p-2"
+        className="mt-24 p-2"
         colorScheme="blue"
         onClick={() => handleSubmit()}
       >

@@ -17,6 +17,7 @@ const midActivities = new Set([
   "church",
 ]);
 const shortActivities = new Set(["movie_theater"]);
+const nightActivities = new Set(["night_club", "bar", "casino"]);
 
 const activities = [
   "movie_theater",
@@ -77,13 +78,16 @@ const activityByHour = (hour: number) => {
     return null;
   } else if (hour >= 10 && hour < 12) {
     return "restaurants";
+  } else if (hour >= 20) {
+    const nightActArray = Array.from(nightActivities);
+    return nightActArray[Math.floor(Math.random() * nightActArray.length)];
   } else {
     return activities[Math.floor(Math.random() * activities.length)];
   }
 };
 
 const timeByActivity = (act: string) => {
-  if (longActivities.has(act)) return 4;
+  if (longActivities.has(act) || nightActivities.has(act)) return 4;
   else if (midActivities.has(act)) return 3;
   else return 2;
 };
@@ -103,19 +107,8 @@ export const generateItinerary = async (
     const act = activityByHour(currHour);
     if (!act) {
       currentPoint = startingPoint;
-      console.log("nada");
       currentDate.setHours(currentDate.getHours() + 1);
     } else {
-      console.log(
-        act,
-        currentDate,
-        new Date(
-          new Date(currentDate).setHours(
-            currentDate.getHours() + timeByActivity(act)
-          )
-        )
-      );
-
       const place_obj = await getPlaceToVisit(currentPoint, act);
       console.log(timeByActivity(act));
       if (place_obj) {

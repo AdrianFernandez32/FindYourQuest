@@ -166,7 +166,7 @@ googleRoutes.get("/palcestovisit", async (req, res, next) => {
   const { id, type } = req.query;
 
   try {
-    const nearbyPlaces = await getEstablishments(id, type, 1000);
+    const nearbyPlaces = await getEstablishments(id, type, 1500);
     res.json(nearbyPlaces);
   } catch (error) {
     console.error(error);

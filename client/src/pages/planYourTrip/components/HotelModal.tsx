@@ -69,6 +69,7 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
                 checkout: formattedDate(new Date(values.checkout)),
                 place_id: values.place_id,
               });
+              onClose();
             }}
           >
             {({ isSubmitting }) => (
@@ -76,7 +77,11 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
                 <VStack spacing={4}>
                   <Field name="place_id">
                     {({ field, form }: any) => (
-                      <FormControl>
+                      <FormControl
+                        isInvalid={
+                          form.errors.place_id && form.touched.place_id
+                        }
+                      >
                         <FormLabel htmlFor="place_id">
                           Search for the hotel
                         </FormLabel>
@@ -128,7 +133,7 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
                           )}
                         </Box>
                         <FormErrorMessage>
-                          {form.errors.checkin}
+                          {form.errors.place_id}
                         </FormErrorMessage>
                       </FormControl>
                     )}
@@ -142,7 +147,11 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
                   >
                     <Field name="checkin">
                       {({ field, form }: any) => (
-                        <FormControl>
+                        <FormControl
+                          isInvalid={
+                            form.errors.checkin && form.touched.checkin
+                          }
+                        >
                           <FormLabel htmlFor="checkin">Check-in date</FormLabel>
                           <Input {...field} id="checkin" type="date" />
                           <FormErrorMessage>
@@ -154,7 +163,11 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
 
                     <Field name="checkout">
                       {({ field, form }: any) => (
-                        <FormControl>
+                        <FormControl
+                          isInvalid={
+                            form.errors.checkout && form.touched.checkout
+                          }
+                        >
                           <FormLabel htmlFor="checkout">
                             Check-out date
                           </FormLabel>
@@ -167,11 +180,7 @@ const HotelModal = ({ isOpen, onClose, setHotel }: any) => {
                     </Field>
                   </Box>
 
-                  <Button
-                    colorScheme="blue"
-                    isLoading={isSubmitting}
-                    type="submit"
-                  >
+                  <Button colorScheme="blue" type="submit">
                     Submit
                   </Button>
                 </VStack>

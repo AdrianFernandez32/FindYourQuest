@@ -10,6 +10,7 @@ import {
 import { Box, Button, Spinner } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import defaultcity from "../../../../assets/images/defaultcity.png";
 
 interface IPlaceInfo {
   formatted_address: string;
@@ -17,7 +18,7 @@ interface IPlaceInfo {
 }
 
 const EventInfo = ({ isOpen, onClose, event, handleDelete }: any) => {
-  const [imageReference, setImageReference] = useState();
+  const [imageReference, setImageReference] = useState<string | null>();
   const [placeInfo, setPlaceInfo] = useState<IPlaceInfo>();
 
   const getImage = async () => {
@@ -32,6 +33,11 @@ const EventInfo = ({ isOpen, onClose, event, handleDelete }: any) => {
       console.error(error);
       return error;
     }
+  };
+
+  const handleClose = () => {
+    setImageReference(null);
+    onClose();
   };
 
   const getPlaceInfo = async () => {
@@ -53,10 +59,10 @@ const EventInfo = ({ isOpen, onClose, event, handleDelete }: any) => {
     }
   }, [event]);
 
-  if (!placeInfo || !imageReference) {
+  if (!placeInfo && !imageReference) {
     return (
       <>
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={handleClose}>
           <ModalOverlay />
           <ModalContent
             display="flex"
@@ -85,18 +91,27 @@ const EventInfo = ({ isOpen, onClose, event, handleDelete }: any) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Event details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box>
-              <img
-                src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${imageReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
-                alt={placeInfo ? placeInfo.name : ""}
-                className="w-full max-h-80 object-cover mb-2"
-              />
+              {imageReference ? (
+                <img
+                  src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${imageReference}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
+                  alt={placeInfo ? placeInfo.name : ""}
+                  className="w-full max-h-80 object-cover mb-2"
+                />
+              ) : (
+                <img
+                  src={defaultcity}
+                  alt={placeInfo ? placeInfo.name : ""}
+                  className="w-full max-h-80 object-cover mb-2"
+                />
+              )}
+
               <p className="text-2xl font-semibold ">
                 {placeInfo ? placeInfo.name : ""}
               </p>

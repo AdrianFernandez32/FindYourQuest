@@ -60,13 +60,13 @@ const ItineraryCard = ({
   }
 
   return (
-    <div className="w-2/3 h-96 rounded-lg shadow cursor-pointer hover:scale-105 flex flex-col duration-200 items-center overflow-hidden relative">
+    <div className="w-full lg:w-2/3 h-[400px] rounded-lg shadow cursor-pointer hover:scale-105 flex flex-col duration-200 items-center overflow-hidden relative">
       <img
         src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=${image}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}
         alt="City Image"
-        className="h-2/3 w-full object-cover"
+        className="h-5/6 w-full object-cover"
       />
-      <div className="flex w-full h-1/3 justify-between items-center p-8">
+      <div className="flex w-full h-1/6 justify-between items-center p-8">
         <h1 className="text-2xl font-bold">{placeInfo.formatted_address}</h1>
         <div className="flex justify-center items-center gap-6">
           <div className="flex flex-col justify-center items-center">
