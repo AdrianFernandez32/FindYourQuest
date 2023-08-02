@@ -15,7 +15,8 @@ export async function createUser(
 ): Promise<Response> {
   try {
     const newUser: IUser = req.body;
-    const conn = await connect();
+    const pool = await connect();
+    const conn = await pool.getConnection();
     const salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(newUser.password, salt);
     const checkEmailQuery = "SELECT * FROM User WHERE email = ?";
@@ -53,20 +54,36 @@ export async function getUser(req: Request, res: Response): Promise<Response> {
 export async function deleteUser(req: Request, res: Response) {
   const id = req.params.postId;
   const conn = await connect();
-  const user = await conn.query(`DELETE FROM User WHERE id = ${id}`);
-  return res.json({
-    message: "Post deleted",
-  });
+  try {
+    const user = await conn.query(`DELETE FROM User WHERE id = ${id}`);
+    return res.json({
+      message: "User deleted",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
 }
 
 export async function updateUser(req: Request, res: Response) {
   const id = req.params.postId;
-  const updatePost: IUser = req.body;
+  const updatedUser: IUser = req.body;
   const conn = await connect();
-  const user = await conn.query(
-    `UPDATE User SET first_name='${updatePost.first_name}', last_name='${updatePost.last_name}', password='${updatePost.password}' WHERE id = ${id}`
-  );
-  return res.json({
-    message: "User updated",
-  });
+  try {
+    const user = await conn.query(
+      `UPDATE User SET first_name='${updatedUser.first_name}', last_name='${updatedUser.last_name}', password='${updatedUser.password}' WHERE id = ${id}`
+    );
+    return res.json({
+      message: "User updated",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
 }

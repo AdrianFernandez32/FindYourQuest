@@ -9,34 +9,55 @@ import { FaUserAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ILoggedUser } from "../../assets/interfaces/LoggedUser";
 import { Spinner } from "@chakra-ui/react";
+import { UserContext } from "../../assets/context/usercontext";
+import { useContext } from "react";
+import { FaPlaneCircleCheck } from "react-icons/fa6";
 
 type Props = {
   open: boolean;
   toggleSidebar: Function;
-  user: ILoggedUser | null;
 };
 
 const options = [
   {
     name: "Home",
     icon: <AiFillHome size="2em" />,
+    route: "/",
   },
   {
     name: "Search",
     icon: <IoMdSearch size="2em" />,
+    route: "/search",
   },
   {
     name: "Plan my trip",
     icon: <BiSolidPlaneAlt size="2em" />,
+    route: "/planmytrip",
+  },
+  {
+    name: "See my itineraries",
+    icon: <FaPlaneCircleCheck size="2em" />,
+    route: "/itineraries",
   },
 ];
 
-const Sidebar = ({ open, toggleSidebar, user }: Props) => {
+const Sidebar = ({ open, toggleSidebar }: Props) => {
   const navigate = useNavigate();
+
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error(
+      "useContext(UserContext) is undefined, please verify the context provider"
+    );
+  }
+
+  const { user, setUser } = userContext;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+    setUser(null);
   };
 
   return (
@@ -76,7 +97,7 @@ const Sidebar = ({ open, toggleSidebar, user }: Props) => {
               </div>
             </div>
             <div className="w-11/12 border-t border-white" />
-            <div className="w-full flex justify-start items-center m-2 p-5 gap-2 duration-150 text-white  hover:bg-[#376e01]">
+            <div className="w-full flex justify-start items-center m-2 p-5 gap-2 duration-150 text-white  hover:bg-[#376e01] cursor-pointer">
               <FaUserAlt size="1.5em" color="white" />
               <h1 className="text-xl font-semibold">Profile</h1>
             </div>
@@ -95,11 +116,12 @@ const Sidebar = ({ open, toggleSidebar, user }: Props) => {
                 name={options.name}
                 icon={options.icon}
                 key={options.name}
+                route={options.route}
               />
             ))}
           </div>
           <div
-            className="w-full flex justify-start items-center border-t border-gray-300 p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00]"
+            className="w-full flex justify-start items-center border-t border-gray-300 p-5 gap-2 duration-150 text-black hover:text-white hover:bg-[#55ab00] cursor-pointer"
             onClick={() => handleLogout()}
           >
             <FiLogOut size="2em" />
