@@ -1,0 +1,5 @@
+## The file map.xml was downloaded from OpenStreetMap, it has an .osm or .xml extention, so what I did for this file was to create the nodes in .json format (graph.json).
+It was a challenge because the map.xml doesn't have the real weight between two nodes, it only has latitude and longitude, so I had to use the haversine formula for calculating the distance between two
+neigbor nodes and add it on the graph.json file.
+
+I actually ran this file in another project so I could just copy and paste the json file, but I decided to store this index.js anyways, for the records.

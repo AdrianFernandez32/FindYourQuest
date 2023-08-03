@@ -23,18 +23,16 @@ class Graph {
   }
 }
 
-// Leemos el archivo JSON y creamos un grafo
 const graphJson = JSON.parse(fs.readFileSync("../assets/graph.json", "utf8"));
 const graph = new Graph();
 
-// Agregamos cada nodo y cada arista al grafo
 graphJson.edges.forEach((edge) => {
   graph.addNode(edge.v);
   graph.addNode(edge.w);
   graph.addEdge(edge.v, edge.w, edge.value);
 });
 
-console.log(graph.getWeight("65285181", "6960850138")); // Debería imprimir 0.012813132158421076
+console.log(graph.getWeight("65285181", "6960850138")); // 0.012813132158421076
 
 // import * as fs from "fs";
 // import graphlibPkg from "graphlib";
