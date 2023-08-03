@@ -2,16 +2,15 @@ import { RxCross2 } from "react-icons/rx";
 import { FiLogOut } from "react-icons/fi";
 import Option from "./Option";
 import { AiFillHome } from "react-icons/ai";
-import { IoMdSearch } from "react-icons/io";
 import { BiSolidPlaneAlt } from "react-icons/bi";
 import tempPfp from "../../assets/images/pfp.jpg";
 import { FaUserAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { ILoggedUser } from "../../assets/interfaces/LoggedUser";
 import { Spinner } from "@chakra-ui/react";
 import { UserContext } from "../../assets/context/usercontext";
 import { useContext } from "react";
 import { FaPlaneCircleCheck } from "react-icons/fa6";
+import { BsMapFill } from "react-icons/bs";
 
 type Props = {
   open: boolean;
@@ -25,11 +24,6 @@ const options = [
     route: "/",
   },
   {
-    name: "Search",
-    icon: <IoMdSearch size="2em" />,
-    route: "/search",
-  },
-  {
     name: "Plan my trip",
     icon: <BiSolidPlaneAlt size="2em" />,
     route: "/planmytrip",
@@ -38,6 +32,11 @@ const options = [
     name: "See my itineraries",
     icon: <FaPlaneCircleCheck size="2em" />,
     route: "/itineraries",
+  },
+  {
+    name: "Get a route",
+    icon: <BsMapFill size="1.8em" />,
+    route: "/map",
   },
 ];
 

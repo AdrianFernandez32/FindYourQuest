@@ -13,6 +13,7 @@ import { UserContext } from "./assets/context/usercontext";
 import { IUser } from "../src/assets/interfaces/User";
 import axios from "axios";
 import ItineraryPage from "./pages/itineraries/ItineraryPage";
+import MapPage from "./pages/map/MapPage";
 
 interface IApiResponse {
   user: IUser;
@@ -72,6 +73,14 @@ function App() {
             element={
               <VerifyRoute>
                 <PlanPage />
+              </VerifyRoute>
+            }
+          />
+          <Route
+            path="/map"
+            element={
+              <VerifyRoute>
+                <MapPage />
               </VerifyRoute>
             }
           />
