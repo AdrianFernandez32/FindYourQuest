@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home";
+import "leaflet/dist/leaflet.css";
 import Login from "./pages/login/Login";
 import VerifyRoute from "./components/ProtectedRoute/VerifyRoute";
 import LoggedUser from "./components/ProtectedRoute/LoggedUser";

@@ -1,5 +1,24 @@
 import * as fs from "fs";
 
+class PriorityQueue {
+  constructor() {
+    this.nodes = [];
+  }
+
+  enqueue(data, priority) {
+    this.nodes.push({ data, priority });
+    this.nodes.sort((a, b) => a.priority - b.priority);
+  }
+
+  dequeue() {
+    return this.nodes.shift();
+  }
+
+  isEmpty() {
+    return !this.nodes.length;
+  }
+}
+
 class Graph {
   constructor() {
     this.nodes = new Map();
@@ -16,10 +35,53 @@ class Graph {
     if (!this.nodes.has(target)) this.addNode(target);
 
     this.nodes.get(source).set(target, weight);
+    this.nodes.get(target).set(source, weight);
   }
 
   getWeight(source, target) {
     return this.nodes.get(source).get(target);
+  }
+
+  dijkstra(source) {
+    const distances = new Map();
+    const previousNodes = new Map();
+    const queue = new PriorityQueue();
+
+    this.nodes.forEach((_, key) => {
+      distances.set(key, key === source ? 0 : Infinity);
+      previousNodes.set(key, null);
+      queue.enqueue(key, distances.get(key));
+    });
+
+    while (!queue.isEmpty()) {
+      const currentNode = queue.dequeue().data;
+
+      this.nodes.get(currentNode).forEach((weight, neighbor) => {
+        const altDistance = distances.get(currentNode) + weight;
+
+        if (altDistance < distances.get(neighbor)) {
+          distances.set(neighbor, altDistance);
+          previousNodes.set(neighbor, currentNode);
+          queue.enqueue(neighbor, distances.get(neighbor));
+        }
+      });
+    }
+
+    return { distances, previousNodes };
+  }
+
+  shortestPath(source, target) {
+    const { distances, previousNodes } = this.dijkstra(source);
+
+    const path = [];
+    let currentNode = target;
+
+    while (currentNode) {
+      path.unshift(currentNode);
+      currentNode = previousNodes.get(currentNode);
+    }
+
+    return { distance: distances.get(target), path };
   }
 }
 
@@ -32,71 +94,4 @@ graphJson.edges.forEach((edge) => {
   graph.addEdge(edge.v, edge.w, edge.value);
 });
 
-console.log(graph.getWeight("65285181", "6960850138")); // 0.012813132158421076
-
-// import * as fs from "fs";
-// import graphlibPkg from "graphlib";
-// const { json: graphlibJson } = graphlibPkg;
-// import Graph from "graph-data-structure";
-
-// const graphJson = JSON.parse(fs.readFileSync("../assets/graph.json", "utf8"));
-// const graphreading = graphlibJson.read(graphJson);
-// console.log(graphreading.edges());
-
-// const graph = Graph();
-
-// graphreading.nodes().forEach((node) => {
-//   graph.addNode(node);
-// });
-
-// graphreading.edges().forEach((edge) => {
-//   graph.addEdge(edge.v, edge.w, edge.value);
-// });
-
-// const calculateDijkstra = (graph, startNode, endNode) => {
-//   let shortestDistances = {};
-//   let previousNodes = {};
-//   let unvisitedNodes = graph.nodes();
-
-//   unvisitedNodes.forEach((node) => {
-//     shortestDistances[node] = Infinity;
-//   });
-//   shortestDistances[startNode] = 0;
-
-//   while (unvisitedNodes.length) {
-//     unvisitedNodes.sort(
-//       (nodeA, nodeB) => shortestDistances[nodeA] - shortestDistances[nodeB]
-//     );
-//     let closestNode = unvisitedNodes.shift();
-
-//     if (shortestDistances[closestNode] === Infinity) {
-//       break;
-//     }
-
-//     graph.adjacent(closestNode).forEach((neighbor) => {
-//       let distanceToNeighbor = graph.getEdgeWeight(closestNode, neighbor);
-//       let totalDistance = shortestDistances[closestNode] + distanceToNeighbor;
-
-//       if (totalDistance < shortestDistances[neighbor]) {
-//         shortestDistances[neighbor] = totalDistance;
-//         previousNodes[neighbor] = closestNode;
-//       }
-//     });
-//   }
-
-//   let path = [endNode];
-//   let previousNode = previousNodes[endNode];
-//   while (previousNode) {
-//     path.unshift(previousNode);
-//     previousNode = previousNodes[previousNode];
-//   }
-
-//   return {
-//     distance: shortestDistances[endNode],
-//     path: path,
-//   };
-// };
-
-// const test = calculateDijkstra(graph, "31793880", "65292045");
-
-// console.log(test);
+console.log(graph.shortestPath("1454101894", "10000737542"));
