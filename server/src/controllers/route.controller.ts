@@ -1,6 +1,7 @@
 import * as fs from "fs";
 
-class PriorityQueue {
+export class PriorityQueue {
+  nodes: any;
   constructor() {
     this.nodes = [];
   }
@@ -19,27 +20,39 @@ class PriorityQueue {
   }
 }
 
-class Graph {
+export class Graph {
+  nodes: Map<any, any>;
   constructor() {
+    const graphJson = JSON.parse(
+      fs.readFileSync(
+        "/Users/adrianfersa/Documents/FindYourQuest/server/src/assets/graph.json",
+        "utf8"
+      )
+    );
+
     this.nodes = new Map();
+
+    graphJson.nodes.forEach((node) => {
+      this.addNode(node.v, node.value.lat, node.value.lon);
+    });
+
+    graphJson.edges.forEach((edge) => {
+      this.addEdge(edge.v, edge.w, edge.value);
+    });
   }
 
-  addNode(key) {
+  addNode(key, lat, lon) {
     if (!this.nodes.has(key)) {
-      this.nodes.set(key, new Map());
+      this.nodes.set(key, { lat, lon, edges: new Map() });
     }
   }
 
   addEdge(source, target, weight) {
-    if (!this.nodes.has(source)) this.addNode(source);
-    if (!this.nodes.has(target)) this.addNode(target);
+    if (!this.nodes.has(source) || !this.nodes.has(target))
+      throw new Error("Both nodes need to exist before creating an edge");
 
-    this.nodes.get(source).set(target, weight);
-    this.nodes.get(target).set(source, weight);
-  }
-
-  getWeight(source, target) {
-    return this.nodes.get(source).get(target);
+    this.nodes.get(source).edges.set(target, weight);
+    this.nodes.get(target).edges.set(source, weight);
   }
 
   dijkstra(source) {
@@ -47,7 +60,7 @@ class Graph {
     const previousNodes = new Map();
     const queue = new PriorityQueue();
 
-    this.nodes.forEach((_, key) => {
+    this.nodes.forEach((node, key) => {
       distances.set(key, key === source ? 0 : Infinity);
       previousNodes.set(key, null);
       queue.enqueue(key, distances.get(key));
@@ -56,7 +69,7 @@ class Graph {
     while (!queue.isEmpty()) {
       const currentNode = queue.dequeue().data;
 
-      this.nodes.get(currentNode).forEach((weight, neighbor) => {
+      this.nodes.get(currentNode).edges.forEach((weight, neighbor) => {
         const altDistance = distances.get(currentNode) + weight;
 
         if (altDistance < distances.get(neighbor)) {
@@ -77,7 +90,7 @@ class Graph {
     let currentNode = target;
 
     while (currentNode) {
-      path.unshift(currentNode);
+      path.unshift(this.nodes.get(currentNode));
       currentNode = previousNodes.get(currentNode);
     }
 
@@ -85,13 +98,4 @@ class Graph {
   }
 }
 
-const graphJson = JSON.parse(fs.readFileSync("../assets/graph.json", "utf8"));
-const graph = new Graph();
-
-graphJson.edges.forEach((edge) => {
-  graph.addNode(edge.v);
-  graph.addNode(edge.w);
-  graph.addEdge(edge.v, edge.w, edge.value);
-});
-
-console.log(graph.shortestPath("1454101894", "10000737542"));
+// console.log(graph.shortestPath("1454101894", "10000737542"));

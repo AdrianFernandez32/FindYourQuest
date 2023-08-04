@@ -9,6 +9,7 @@ import ActivityRoutes from "./routes/activities.route.js";
 import TripRoutes from "./routes/trips.route.js";
 import HotelRoutes from "./routes/hotels.route.js";
 import FlightRoutes from "./routes/flights.routes.js";
+import shortestPathRouter from "./routes/route.route.js";
 export class App {
     constructor(port) {
         this.port = port;
@@ -42,6 +43,7 @@ export class App {
         this.app.use("/trips", TripRoutes);
         this.app.use("/hotels", HotelRoutes);
         this.app.use("/flights", FlightRoutes);
+        this.app.use("/shortest-path", shortestPathRouter);
     }
     async listen() {
         await this.app.listen(this.app.get("port"));
