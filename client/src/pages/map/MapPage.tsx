@@ -68,10 +68,6 @@ const MapPage = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          {/* Añade un marcador para cada punto en tu ruta */}
-          {/* {path.map((point: any, idx: any) => (
-            <Marker position={[point[0], point[1]]} key={idx} />
-          ))} */}
 
           <Polyline pathOptions={{ color: "blue" }} positions={path} />
         </MapContainer>

@@ -8,7 +8,8 @@ Problems someone may face:
 
 -- Don't know where to go
 -- Don't know good places to visit
--- Don't know how to adjust my budget
+-- Don't know how the best rated places around me
+-- Don't have time for creating an itinerary
 
 ## User roles
 
@@ -36,9 +37,8 @@ Julia is a 30-year-old travel enthusiast from San Francisco, California. She wor
 
 - Discover unique tourist attractions and hidden gems in different destinations.
 - Find highly-rated restaurants and accommodations within her budget.
-- Plan her trips efficiently, including flights, hotels, and itinerary.
-- Get personalized recommendations based on her preferences and previous user experiences.
-- Share her travel experiences and connect with other like-minded travelers.
+- Plan her trips efficiently, including itinerary.
+- Have an app for creating itineraries esaily.
 
 #### Challenges:
 
@@ -56,7 +56,7 @@ As an adventure seeker, I want to easily discover unique tourist attractions, fi
 
 - "FindYourQuest" provides a user-friendly platform where Julia can explore a curated list of tourist attractions, restaurants, and accommodations in various destinations.
 - The app offers comprehensive information, including Google Maps ratings and user reviews, to help Julia make informed decisions.
-- Julia can utilize the trip planning feature to search for affordable flights, book hotels, and create personalized itineraries based on her preferences.
+- Julia can utilize the trip planning feature to search and create personalized itineraries.
 - The AI-powered "Adventure Mode" allows Julia to input her budget and desired travel duration, and generates a suggested destination with a pre-planned itinerary.
 - Julia can access user-generated routes, rate them, and contribute her own routes to help other travelers find the best experiences.
 - By engaging with the "FindYourQuest" community, Julia can share her travel stories, connect with fellow adventurers, and gain insights and recommendations from experienced travelers.
@@ -75,17 +75,11 @@ As an adventure seeker, I want to easily discover unique tourist attractions, fi
 
 4. As a traveler, I want to create a personalized travel itinerary by selecting attractions, restaurants, and accommodations, allowing me to plan my trip efficiently.
 
-5. As a traveler, I want to access detailed information about tourist attractions, including opening hours, ticket prices, and traveler reviews, to make informed decisions.
+5. As a traveler, I want to access detailed information about tourist attractions to make informed decisions.
 
-6. As a traveler, I want to view and contribute to traveler-generated routes, discovering unique and off-the-beaten-path travel experiences shared by fellow travelers.
+6. As a traveler, I want to view the shortest path to get into my destination fast.
 
-7. As a traveler, I want to receive personalized recommendations based on my travel preferences and previous experiences, helping me discover new destinations and activities.
-
-8. As a traveler, I want to book flights within my budget and view available airlines, departure times, and prices, ensuring a convenient travel experience.
-
-9. As a traveler, I want to access real-time updates on travel deals and discounts for flights, accommodations, and attractions, allowing me to save money on my trips.
-
-10. As a traveler, I want to share my travel experiences, photos, and recommendations with the "FindYourQuest" community, connecting with other travel enthusiasts and inspiring future adventurers.
+7. As a traveler, I want to receive personalized recommendations based on my current location or the hotel I'm gonna stay in.
 
 ## Wireframes
 
@@ -95,18 +89,23 @@ As an adventure seeker, I want to easily discover unique tourist attractions, fi
 
 ### Required
 
-- User can login
+- User can login/logout
 - User can create an account
-- User can create / edit / delete comments
-- User can like comments
-- User can see/edit their profile
-- Create itineraries for their future travels
-- Save or delete these itineraries (Up to 3 per user)
+- Create or generate itineraries for their future travels
+- Save these itineraries
 - User can see places around them in real-time
-- Adventure mode
+- Autogenerate itinerary
+- A map for getting the shortest path from a location to another location
+- Dynamic hover
+- Styiling from scratch
+- Get current city based on current location.
+- Get Nearby places/cities
 - User passwords are encrypted in the database for security
 
 ### Optional
 
 - User can upload multi-media (photos, videos) comments
 - See deals for hotels, restaurants of recreational activities
+- Edit itinerary
+- Get Nearby cities
+- Get nearby places based on type
