@@ -3,21 +3,36 @@ import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Spinner } from "@chakra-ui/spinner";
+import { Input } from "@chakra-ui/input";
+import { Button } from "@chakra-ui/button";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
 const MapPage = () => {
   const [path, setPath] = useState<any>([]);
   const [distance, setDistance] = useState<number>(0);
+  const [start, setStart] = useState<string>();
+  const [end, setEnd] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   const fetchPaths = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3001/shortest-path/1454101894/10000737542`
+        `http://localhost:3001/shortest-path/${start}/${end}`
       );
 
       formatPath(response.data.path);
       setDistance(response.data.distance);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,33 +43,46 @@ const MapPage = () => {
     setPath(newPaths);
   };
 
-  useEffect(() => {
-    fetchPaths();
-  }, []);
-  console.log(path);
-
-  if (!path || !distance) {
-    return (
-      <Layout>
-        <div className="w-full h-screen flex justify-center items-center gap-4">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
-          <h1 className="lg:text-3xl text-xl font-bold">
-            Loading shortest route...
-          </h1>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
-      <div style={{ height: "100vh", width: "100%" }}>
+      <div className="flex flex-col justify-center items-center gap-2 my-2">
+        <div className="flex justify-center items-center gap-2">
+          <Input
+            className="p-2 border border-gray-500 rounded-md"
+            placeholder="Set starting point"
+            onChange={(e) => setStart(e.target.value)}
+          />
+          <Input
+            className="p-2 border border-gray-500 rounded-md"
+            placeholder="Set ending point"
+            onChange={(e) => setEnd(e.target.value)}
+          />
+        </div>
+        <Button
+          className="bg-[#55ab00] text-white border border-[#55ab00] duration-200 hover:bg-white hover:text-[#55ab00]"
+          onClick={() => fetchPaths()}
+        >
+          Submit
+        </Button>
+      </div>
+
+      <Modal isOpen={loading} onClose={() => setLoading(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalBody
+            display="flex"
+            justifyContent="center"
+            className="flex flex-col gap-2 justify-center items-center"
+          >
+            <Spinner />
+            <h1 className="text-2xl font-semibold">
+              Loading your best route...
+            </h1>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <div style={{ height: "90vh", width: "100%" }}>
         <MapContainer
           center={[37.79285, -122.401795]}
           bounds={[
